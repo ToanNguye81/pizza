@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "orders")
@@ -17,7 +18,18 @@ public class Order {
     @Column(name = "id", unique = true)
     private int id;
 
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "comments")
+    private String comments;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
     @Temporal(TemporalType.TIMESTAMP)
+
     @Column(name = "required_date", nullable = true, updatable = false)
     @CreatedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
@@ -30,7 +42,7 @@ public class Order {
     private Date orderDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "shipped_at", nullable = true)
+    @Column(name = "shipped_date", nullable = true)
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date shippedDate;
@@ -40,16 +52,6 @@ public class Order {
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;
-
-    @Column(name = "status")
-    private String status;
-
-    @Column(name = "comments")
-    private String comments;
-
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
 
     public Order() {
         super();
