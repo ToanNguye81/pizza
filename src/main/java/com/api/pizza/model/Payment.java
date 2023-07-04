@@ -1,8 +1,13 @@
 package com.api.pizza.model;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "payments")
@@ -17,12 +22,15 @@ public class Payment {
     private int checkNumber;
 
     @Column(name = "payment_date")
-    private String paymentDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private Date paymentDate;
 
     @Column(name = "amount")
+    @Positive(message = "Amount lớn hơn hoặc bằng 0")
     private BigDecimal amount;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
@@ -47,7 +55,7 @@ public class Payment {
         this.id = id;
     }
 
-    public void setPaymentDate(String paymentDate) {
+    public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
 
@@ -67,7 +75,7 @@ public class Payment {
         return id;
     }
 
-    public String getPaymentDate() {
+    public Date getPaymentDate() {
         return paymentDate;
     }
 }
