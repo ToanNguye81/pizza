@@ -53,27 +53,10 @@ public class CustomerController {
         }
     }
 
-    // get customer by id
-    @GetMapping("/customers/{customerId}")
-    public ResponseEntity<Object> getCustomerById(@PathVariable Integer customerId) {
-        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
-        if (vCustomerData.isPresent()) {
-            try {
-                Customer vCustomer = vCustomerData.get();
-                return new ResponseEntity<>(vCustomer, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else {
-            Customer vCustomerNull = new Customer();
-            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
-        }
-    }
-
     // create new customer
     @PostMapping("/customers")
-    public ResponseEntity<Object> createCustomer(@Valid @RequestBody Customer pCustomer) {
-
+    public ResponseEntity<Object> createNewCustomer(
+            @Valid @RequestBody Customer pCustomer) {
         try {
             Customer vCustomer = new Customer();
             vCustomer.setAddress(pCustomer.getAddress());
@@ -98,9 +81,28 @@ public class CustomerController {
 
     }
 
+    // get customer by id
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<Object> getCustomerById(
+            @PathVariable Integer customerId) {
+        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
+        if (vCustomerData.isPresent()) {
+            try {
+                Customer vCustomer = vCustomerData.get();
+                return new ResponseEntity<>(vCustomer, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            Customer vCustomerNull = new Customer();
+            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
+        }
+    }
+
     // Update customer by id
     @PutMapping("/customers/{id}")
-    public ResponseEntity<Object> updateCustomer(@PathVariable Integer id,
+    public ResponseEntity<Object> updateCustomer(
+            @PathVariable Integer id,
             @Valid @RequestBody Customer pCustomer) {
         Optional<Customer> vCustomerData = gCustomerRepository.findById(id);
         if (vCustomerData.isPresent()) {
@@ -132,7 +134,8 @@ public class CustomerController {
 
     // Delete customer by id
     @DeleteMapping("/customers/{id}")
-    private ResponseEntity<Object> deleteCustomerById(@PathVariable Integer id) {
+    private ResponseEntity<Object> deleteCustomerById(
+            @PathVariable Integer id) {
         Optional<Customer> vCustomerData = gCustomerRepository.findById(id);
         if (vCustomerData.isPresent()) {
             try {

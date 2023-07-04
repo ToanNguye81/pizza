@@ -11,6 +11,7 @@ import javax.validation.constraints.Size;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "customers")
@@ -51,7 +52,6 @@ public class Customer {
 
     @NotNull(message = "Nhập postalCode")
     @Size(min = 2, message = "Postal code phải có ít nhất 2 ký tự ")
-    @Column(name = "postal_code", unique = true)
     private String postalCode;
 
     @Column(name = "sales_rep_employee_number")
@@ -72,11 +72,13 @@ public class Customer {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;
 
-    // Khai báo kiểu quan hệ 1-n => user-order
+    // 1-n => user-order
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    // Khai báo kiểu quan hệ 1-n => user-payment
+    // 1-n => user-payment
+    @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
 
@@ -161,7 +163,7 @@ public class Customer {
         return country;
     }
 
-    public Date getCreateAt() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
