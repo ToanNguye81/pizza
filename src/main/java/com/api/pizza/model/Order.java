@@ -1,6 +1,7 @@
 package com.api.pizza.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -29,6 +30,11 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
     @Temporal(TemporalType.TIMESTAMP)
+
+    // 1-n => order- orderDetail
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails;
 
     @Column(name = "required_date", nullable = true, updatable = false)
     @CreatedDate
@@ -122,4 +128,11 @@ public class Order {
         return updatedDate;
     }
 
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
 }
