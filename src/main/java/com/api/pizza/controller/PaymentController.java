@@ -100,7 +100,7 @@ public class PaymentController {
     }
 
     // Update payment by id
-    @PutMapping("customers/customerId/payments/{id}")
+    @PutMapping("customers/{customerId}/payments/{id}")
     public ResponseEntity<Object> updatePayment(
             @PathVariable Integer customerId,
             @PathVariable Integer paymentId,
@@ -111,7 +111,6 @@ public class PaymentController {
             if (vCustomerData.isPresent()) {
                 try {
                     Payment vPayment = vPaymentData.get();
-                    vPayment.setCustomer(vCustomerData.get());
                     vPayment.setAmount(pPayment.getAmount());
                     vPayment.setCheckNumber(pPayment.getCheckNumber());
                     vPayment.setPaymentDate(pPayment.getPaymentDate());
