@@ -104,7 +104,7 @@ public class OrderController {
     }
 
     // Update order by id
-    @PutMapping("customers/customerId/orders/{id}")
+    @PutMapping("customers/{customerId}/orders/{id}")
     public ResponseEntity<Object> updateOrder(
             @PathVariable Integer customerId,
             @PathVariable Integer orderId,
