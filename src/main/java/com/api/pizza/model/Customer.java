@@ -22,22 +22,22 @@ public class Customer {
     private int id;
 
     @NotNull(message = "Nhập First Name")
-    @Size(min = 2, message = "First Name phải có ít nhất 2 ký tự ")
+    @Size(min = 2, message = "First Name at least 2 characters ")
     @Column(name = "first_name")
     private String firstName;
 
     @NotNull(message = "Nhập Last Name")
-    @Size(min = 2, message = "Last Name phải có ít nhất 2 ký tự ")
+    @Size(min = 2, message = "Last Name at least 2 characters ")
     @Column(name = "last_name")
     private String lastName;
 
     @NotNull(message = "Nhập phone")
-    @Size(min = 10, max = 10, message = "Phone Number phải là chuỗi có đúng 10 chữ số")
+    @Size(min = 10, max = 10, message = "Phone Number have 10 digitals")
     @Column(name = "phoneNumber", unique = true)
     private String phoneNumber;
 
     @NotNull(message = "Nhập email")
-    @Email(message = "Email không hợp lệ")
+    @Email(message = "Email not valid")
     @Column(name = "email", unique = true)
     private String email;
 
@@ -51,7 +51,7 @@ public class Customer {
     private String country;
 
     @NotNull(message = "Nhập postalCode")
-    @Size(min = 2, message = "Postal code phải có ít nhất 2 ký tự ")
+    @Size(min = 2, message = "Postal code at least 2 characters ")
     private String postalCode;
 
     @Column(name = "sales_rep_employee_number")
@@ -72,12 +72,12 @@ public class Customer {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;
 
-    // 1-n => user-order
+    // 1-n => customer-order
     @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;
 
-    // 1-n => user-payment
+    // 1-n => customer-payment
     @JsonIgnore
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
