@@ -1,5 +1,6 @@
 package com.api.pizza.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Customer;
 import com.api.pizza.model.Product;
-import com.api.pizza.repository.ICustomerRepository;
+import com.api.pizza.model.ProductLine;
+import com.api.pizza.repository.IProductLineRepository;
 import com.api.pizza.repository.IProductRepository;
 
 @RestController
@@ -34,7 +35,7 @@ public class ProductController {
     @Autowired
     IProductRepository gProductRepository;
     @Autowired
-    ICustomerRepository gCustomerRepository;
+    IProductLineRepository gProductLineRepository;
 
     // get all Product
     @GetMapping("products")
@@ -77,14 +78,21 @@ public class ProductController {
     @PostMapping("product-lines/{productLineId}products")
     public ResponseEntity<Object> createNewProduct(@Valid @RequestBody Product pProduct,
             @PathVariable Integer productLineId) {
-        Optional<Customer> vCustomerData = gCustomerRepository.findById(productLineId);
-        if (vCustomerData.isPresent()) {
+        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
+        if (vProductLineData.isPresent()) {
             try {
                 Product vProduct = new Product();
-                vProduct.setCustomer(vCustomerData.get());
-                vProduct.setAmount(pProduct.getAmount());
-                vProduct.setCheckNumber(pProduct.getCheckNumber());
-                vProduct.setProductDate(pProduct.getProductDate());
+
+                vProduct.setBuyPrice(pProduct.getBuyPrice());
+                vProduct.setProductCode(pProduct.getProductCode());
+                vProduct.setProductDescription(pProduct.getProductDescription());
+                vProduct.setProductName(pProduct.getProductName());
+                vProduct.setProductScale(pProduct.getProductScale());
+                vProduct.setProductVendor(pProduct.getProductVendor());
+                vProduct.setQuantityInStock(pProduct.getQuantityInStock());
+                vProduct.setProductLine(vProductLineData.get());
+                vProduct.setCreatedDate(new Date());
+
                 // save product & return
                 Product vSavedProduct = gProductRepository.save(vProduct);
                 return new ResponseEntity<>(vSavedProduct, HttpStatus.CREATED);
@@ -93,8 +101,8 @@ public class ProductController {
                         .body("Failed to Create specified Product: " + e.getCause().getCause().getMessage());
             }
         } else {
-            Customer vCustomerNull = new Customer();
-            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
+            ProductLine vProductLineNull = new ProductLine();
+            return new ResponseEntity<>(vProductLineNull, HttpStatus.NOT_FOUND);
         }
 
     }
@@ -107,26 +115,34 @@ public class ProductController {
             @Valid @RequestBody Product pProduct) {
         Optional<Product> vProductData = gProductRepository.findById(productId);
         if (vProductData.isPresent()) {
-            Optional<Customer> vCustomerData = gCustomerRepository.findById(productLineId);
-            if (vCustomerData.isPresent()) {
+            Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
+            if (vProductLineData.isPresent()) {
                 try {
                     Product vProduct = vProductData.get();
-                    vProduct.setAmount(pProduct.getAmount());
-                    vProduct.setCheckNumber(pProduct.getCheckNumber());
-                    vProduct.setProductDate(pProduct.getProductDate());
+
+                    vProduct.setBuyPrice(pProduct.getBuyPrice());
+                    vProduct.setProductCode(pProduct.getProductCode());
+                    vProduct.setProductDescription(pProduct.getProductDescription());
+                    vProduct.setProductName(pProduct.getProductName());
+                    vProduct.setProductScale(pProduct.getProductScale());
+                    vProduct.setProductVendor(pProduct.getProductVendor());
+                    vProduct.setQuantityInStock(pProduct.getQuantityInStock());
+                    vProduct.setProductLine(vProductLineData.get());
+                    vProduct.setUpdatedDate(new Date());
+
                     Product vSavedProduct = gProductRepository.save(vProduct);
                     return new ResponseEntity<>(vSavedProduct, HttpStatus.OK);
                 } catch (Exception e) {
                     return ResponseEntity.unprocessableEntity()
-                            .body("Failed to Update specified Customer: " + e.getCause().getCause().getMessage());
+                            .body("Failed to Update specified ProductLine: " + e.getCause().getCause().getMessage());
                 }
             } else {
                 Product vProductNull = new Product();
                 return new ResponseEntity<>(vProductNull, HttpStatus.NOT_FOUND);
             }
         } else {
-            Customer vCustomerNull = new Customer();
-            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
+            ProductLine vProductLineNull = new ProductLine();
+            return new ResponseEntity<>(vProductLineNull, HttpStatus.NOT_FOUND);
         }
     }
 
