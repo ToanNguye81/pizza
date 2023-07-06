@@ -1,7 +1,7 @@
 package com.api.pizza.model;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
