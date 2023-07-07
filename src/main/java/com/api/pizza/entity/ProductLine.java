@@ -1,4 +1,4 @@
-package com.api.pizza.model;
+package com.api.pizza.entity;
 
 import java.util.Date;
 
