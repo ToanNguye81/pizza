@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Product;
-import com.api.pizza.model.ProductLine;
+import com.api.pizza.entity.Product;
+import com.api.pizza.entity.ProductLine;
 import com.api.pizza.repository.IProductLineRepository;
 import com.api.pizza.repository.IProductRepository;
 
@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     // create new product
-    @PostMapping("product-lines/{productLineId}products")
+    @PostMapping("product-lines/{productLineId}/products")
     public ResponseEntity<Object> createNewProduct(@Valid @RequestBody Product pProduct,
             @PathVariable Integer productLineId) {
         Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
@@ -108,7 +108,7 @@ public class ProductController {
     }
 
     // Update product by id
-    @PutMapping("product-lines/{productLineId}products/{id}")
+    @PutMapping("product-lines/{productLineId}/products/{productId}")
     public ResponseEntity<Object> updateProduct(
             @PathVariable Integer productLineId,
             @PathVariable Integer productId,

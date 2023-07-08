@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Employee;
+import com.api.pizza.entity.Employee;
 import com.api.pizza.repository.IEmployeeRepository;
 
 @RestController
@@ -96,11 +96,11 @@ public class EmployeeController {
     }
 
     // Update employee by id
-    @PutMapping("/employees/{id}")
+    @PutMapping("/employees/{employeeId}")
     public ResponseEntity<Object> updateEmployee(
-            @PathVariable Integer id,
+            @PathVariable Integer employeeId,
             @Valid @RequestBody Employee pEmployee) {
-        Optional<Employee> vEmployeeData = gEmployeeRepository.findById(id);
+        Optional<Employee> vEmployeeData = gEmployeeRepository.findById(employeeId);
         if (vEmployeeData.isPresent()) {
             try {
                 Employee vEmployee = vEmployeeData.get();
@@ -125,13 +125,13 @@ public class EmployeeController {
     }
 
     // Delete employee by id
-    @DeleteMapping("/employees/{id}")
+    @DeleteMapping("/employees/{employeeId}")
     private ResponseEntity<Object> deleteEmployeeById(
-            @PathVariable Integer id) {
-        Optional<Employee> vEmployeeData = gEmployeeRepository.findById(id);
+            @PathVariable Integer employeeId) {
+        Optional<Employee> vEmployeeData = gEmployeeRepository.findById(employeeId);
         if (vEmployeeData.isPresent()) {
             try {
-                gEmployeeRepository.deleteById(id);
+                gEmployeeRepository.deleteById(employeeId);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

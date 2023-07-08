@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.ProductLine;
+import com.api.pizza.entity.ProductLine;
 import com.api.pizza.repository.IProductLineRepository;
 
 @RestController
@@ -34,7 +34,7 @@ public class ProductLineController {
     IProductLineRepository gProductLineRepository;
 
     // get all ProductLine
-    @GetMapping("/customers")
+    @GetMapping("/product-lines")
     public ResponseEntity<List<ProductLine>> getAllProductLine(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -53,8 +53,8 @@ public class ProductLineController {
         }
     }
 
-    // create new customer
-    @PostMapping("/customers")
+    // create new product-line
+    @PostMapping("/product-lines")
     public ResponseEntity<Object> createNewProductLine(
             @Valid @RequestBody ProductLine pProductLine) {
         try {
@@ -62,8 +62,6 @@ public class ProductLineController {
 
             vProductLine.setDescription(pProductLine.getDescription());
             vProductLine.setProductLine(pProductLine.getProductLine());
-            vProductLine.setCreatedDate(new Date());
-
             vProductLine.setCreatedDate(new Date());
 
             ProductLine vProductLineSave = gProductLineRepository.save(vProductLine);
@@ -75,11 +73,11 @@ public class ProductLineController {
 
     }
 
-    // get customer by id
-    @GetMapping("/customers/{customerId}")
+    // get product-line by id
+    @GetMapping("/product-lines/{productLineId}")
     public ResponseEntity<Object> getProductLineById(
-            @PathVariable Integer customerId) {
-        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(customerId);
+            @PathVariable Integer productLineId) {
+        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
         if (vProductLineData.isPresent()) {
             try {
                 ProductLine vProductLine = vProductLineData.get();
@@ -93,12 +91,12 @@ public class ProductLineController {
         }
     }
 
-    // Update customer by id
-    @PutMapping("/customers/{id}")
+    // Update product-line by id
+    @PutMapping("/product-lines/{productLineId}")
     public ResponseEntity<Object> updateProductLine(
-            @PathVariable Integer id,
+            @PathVariable Integer productLineId,
             @Valid @RequestBody ProductLine pProductLine) {
-        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(id);
+        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
         if (vProductLineData.isPresent()) {
             try {
                 ProductLine vProductLine = vProductLineData.get();
@@ -119,14 +117,14 @@ public class ProductLineController {
         }
     }
 
-    // Delete customer by id
-    @DeleteMapping("/customers/{id}")
+    // Delete product-line by id
+    @DeleteMapping("/product-lines/{productLineId}")
     private ResponseEntity<Object> deleteProductLineById(
-            @PathVariable Integer id) {
-        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(id);
+            @PathVariable Integer productLineId) {
+        Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
         if (vProductLineData.isPresent()) {
             try {
-                gProductLineRepository.deleteById(id);
+                gProductLineRepository.deleteById(productLineId);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

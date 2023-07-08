@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Customer;
-import com.api.pizza.model.Payment;
+import com.api.pizza.entity.Customer;
+import com.api.pizza.entity.Payment;
 import com.api.pizza.repository.ICustomerRepository;
 import com.api.pizza.repository.IPaymentRepository;
 
@@ -100,7 +100,7 @@ public class PaymentController {
     }
 
     // Update payment by id
-    @PutMapping("customers/{customerId}/payments/{id}")
+    @PutMapping("customers/{customerId}/payments/{paymentId}")
     public ResponseEntity<Object> updatePayment(
             @PathVariable Integer customerId,
             @PathVariable Integer paymentId,

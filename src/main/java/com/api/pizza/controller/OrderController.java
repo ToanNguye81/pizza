@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Customer;
-import com.api.pizza.model.Order;
+import com.api.pizza.entity.Customer;
+import com.api.pizza.entity.Order;
 import com.api.pizza.repository.ICustomerRepository;
 import com.api.pizza.repository.IOrderRepository;
 
@@ -104,7 +104,7 @@ public class OrderController {
     }
 
     // Update order by id
-    @PutMapping("customers/{customerId}/orders/{id}")
+    @PutMapping("customers/{customerId}/orders/{orderId}")
     public ResponseEntity<Object> updateOrder(
             @PathVariable Integer customerId,
             @PathVariable Integer orderId,

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Office;
+import com.api.pizza.entity.Office;
 import com.api.pizza.repository.IOfficeRepository;
 
 @RestController
@@ -96,11 +96,11 @@ public class OfficeController {
     }
 
     // Update office by id
-    @PutMapping("/offices/{id}")
+    @PutMapping("/offices/{officeId}")
     public ResponseEntity<Object> updateOffice(
-            @PathVariable Integer id,
+            @PathVariable Integer officeId,
             @Valid @RequestBody Office pOffice) {
-        Optional<Office> vOfficeData = gOfficeRepository.findById(id);
+        Optional<Office> vOfficeData = gOfficeRepository.findById(officeId);
         if (vOfficeData.isPresent()) {
             try {
                 Office vOffice = vOfficeData.get();
@@ -125,14 +125,14 @@ public class OfficeController {
         }
     }
 
-    // Delete office by id
-    @DeleteMapping("/offices/{id}")
+    // Delete office by officeId
+    @DeleteMapping("/offices/{officeId}")
     private ResponseEntity<Object> deleteOfficeById(
-            @PathVariable Integer id) {
-        Optional<Office> vOfficeData = gOfficeRepository.findById(id);
+            @PathVariable Integer officeId) {
+        Optional<Office> vOfficeData = gOfficeRepository.findById(officeId);
         if (vOfficeData.isPresent()) {
             try {
-                gOfficeRepository.deleteById(id);
+                gOfficeRepository.deleteById(officeId);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

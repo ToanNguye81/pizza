@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Customer;
+import com.api.pizza.entity.Customer;
 import com.api.pizza.repository.ICustomerRepository;
 
 @RestController
@@ -100,11 +100,11 @@ public class CustomerController {
     }
 
     // Update customer by id
-    @PutMapping("/customers/{id}")
+    @PutMapping("/customers/{customerId}")
     public ResponseEntity<Object> updateCustomer(
-            @PathVariable Integer id,
+            @PathVariable Integer customerId,
             @Valid @RequestBody Customer pCustomer) {
-        Optional<Customer> vCustomerData = gCustomerRepository.findById(id);
+        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
         if (vCustomerData.isPresent()) {
             try {
                 Customer vCustomer = vCustomerData.get();
@@ -133,13 +133,13 @@ public class CustomerController {
     }
 
     // Delete customer by id
-    @DeleteMapping("/customers/{id}")
+    @DeleteMapping("/customers/{customerId}")
     private ResponseEntity<Object> deleteCustomerById(
-            @PathVariable Integer id) {
-        Optional<Customer> vCustomerData = gCustomerRepository.findById(id);
+            @PathVariable Integer customerId) {
+        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
         if (vCustomerData.isPresent()) {
             try {
-                gCustomerRepository.deleteById(id);
+                gCustomerRepository.deleteById(customerId);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

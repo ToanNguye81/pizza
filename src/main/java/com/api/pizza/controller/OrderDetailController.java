@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.api.pizza.model.Order;
-import com.api.pizza.model.OrderDetail;
 import com.api.pizza.repository.IOrderRepository;
+import com.api.pizza.entity.Order;
+import com.api.pizza.entity.OrderDetail;
 import com.api.pizza.repository.IOrderDetailRepository;
 
 @RestController
@@ -38,7 +38,7 @@ public class OrderDetailController {
     IOrderRepository gOrderRepository;
 
     // get all OrderDetail
-    @GetMapping("/payments")
+    @GetMapping("/order-details")
     public ResponseEntity<List<OrderDetail>> getAllOrderDetail(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -57,10 +57,10 @@ public class OrderDetailController {
         }
     }
 
-    // get payment by id
-    @GetMapping("payments/{paymentId}")
-    public ResponseEntity<Object> getOrderDetailById(@PathVariable Integer paymentId) {
-        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(paymentId);
+    // get order-details by id
+    @GetMapping("orderDetails/{orderDetail}")
+    public ResponseEntity<Object> getOrderDetailById(@PathVariable Integer orderDetail) {
+        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(orderDetail);
         if (vOrderDetailData.isPresent()) {
             try {
                 OrderDetail vOrderDetail = vOrderDetailData.get();
@@ -74,8 +74,8 @@ public class OrderDetailController {
         }
     }
 
-    // create new payment
-    @PostMapping("orders/{orderId}/payments")
+    // create new order-details
+    @PostMapping("orders/{orderId}/orderDetails")
     public ResponseEntity<Object> createNewOrderDetail(@Valid @RequestBody OrderDetail pOrderDetail,
             @PathVariable Integer orderId) {
         Optional<Order> vOrderData = gOrderRepository.findById(orderId);
@@ -86,7 +86,7 @@ public class OrderDetailController {
                 vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
                 vOrderDetail.setUpdatedDate(pOrderDetail.getUpdatedDate());
                 vOrderDetail.setCreatedDate(new Date());
-                // save payment & return
+                // save order-details & return
                 OrderDetail vSavedOrderDetail = gOrderDetailRepository.save(vOrderDetail);
                 return new ResponseEntity<>(vSavedOrderDetail, HttpStatus.CREATED);
             } catch (Exception e) {
@@ -100,18 +100,18 @@ public class OrderDetailController {
 
     }
 
-    // Update payment by id
-    @PutMapping("orders/{orderId}/payments/{id}")
+    // Update order-details by id
+    @PutMapping("orders/{orderId}/orderDetails/{orderDetailId}")
     public ResponseEntity<Object> updateOrderDetail(
             @PathVariable Integer orderId,
-            @PathVariable Integer paymentId,
+            @PathVariable Integer orderDetailId,
             @Valid @RequestBody OrderDetail pOrderDetail) {
-        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(paymentId);
+        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(orderDetailId);
         if (vOrderDetailData.isPresent()) {
             Optional<Order> vOrderData = gOrderRepository.findById(orderId);
             if (vOrderData.isPresent()) {
                 try {
-                    
+
                     OrderDetail vOrderDetail = vOrderDetailData.get();
                     vOrderDetail.setOrder(vOrderData.get());
                     vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
@@ -134,13 +134,13 @@ public class OrderDetailController {
         }
     }
 
-    // Delete payment by id
-    @DeleteMapping("/payments/{paymentId}")
-    private ResponseEntity<Object> deleteOrderDetailById(@PathVariable Integer paymentId) {
-        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(paymentId);
+    // Delete order-details by id
+    @DeleteMapping("/order-details/{orderDetailId}")
+    private ResponseEntity<Object> deleteOrderDetailById(@PathVariable Integer orderDetailId) {
+        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(orderDetailId);
         if (vOrderDetailData.isPresent()) {
             try {
-                gOrderDetailRepository.deleteById(paymentId);
+                gOrderDetailRepository.deleteById(orderDetailId);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
