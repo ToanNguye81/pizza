@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "orderDetails")
 public class OrderDetail {
 
     @Id
@@ -27,7 +27,7 @@ public class OrderDetail {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "orderDetails_id", nullable = false)
     private Order order;
 
     @Temporal(TemporalType.TIMESTAMP)

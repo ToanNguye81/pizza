@@ -58,9 +58,9 @@ public class OrderDetailController {
     }
 
     // get order-details by id
-    @GetMapping("orderDetails/{orderDetail}")
-    public ResponseEntity<Object> getOrderDetailById(@PathVariable Integer orderDetail) {
-        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(orderDetail);
+    @GetMapping("/order-details/{orderDetailId}")
+    public ResponseEntity<Object> getOrderDetailById(@PathVariable Integer orderDetailId) {
+        Optional<OrderDetail> vOrderDetailData = gOrderDetailRepository.findById(orderDetailId);
         if (vOrderDetailData.isPresent()) {
             try {
                 OrderDetail vOrderDetail = vOrderDetailData.get();
@@ -75,7 +75,7 @@ public class OrderDetailController {
     }
 
     // create new order-details
-    @PostMapping("orders/{orderId}/orderDetails")
+    @PostMapping("/orders/{orderId}/order-details")
     public ResponseEntity<Object> createNewOrderDetail(@Valid @RequestBody OrderDetail pOrderDetail,
             @PathVariable Integer orderId) {
         Optional<Order> vOrderData = gOrderRepository.findById(orderId);
@@ -84,7 +84,7 @@ public class OrderDetailController {
                 OrderDetail vOrderDetail = new OrderDetail();
                 vOrderDetail.setOrder(vOrderData.get());
                 vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
-                vOrderDetail.setUpdatedDate(pOrderDetail.getUpdatedDate());
+                vOrderDetail.setPriceEach(pOrderDetail.getPriceEach());
                 vOrderDetail.setCreatedDate(new Date());
                 // save order-details & return
                 OrderDetail vSavedOrderDetail = gOrderDetailRepository.save(vOrderDetail);
@@ -101,7 +101,7 @@ public class OrderDetailController {
     }
 
     // Update order-details by id
-    @PutMapping("orders/{orderId}/orderDetails/{orderDetailId}")
+    @PutMapping("/orders/{orderId}/order-details/{orderDetailId}")
     public ResponseEntity<Object> updateOrderDetail(
             @PathVariable Integer orderId,
             @PathVariable Integer orderDetailId,
@@ -115,7 +115,7 @@ public class OrderDetailController {
                     OrderDetail vOrderDetail = vOrderDetailData.get();
                     vOrderDetail.setOrder(vOrderData.get());
                     vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
-                    vOrderDetail.setUpdatedDate(pOrderDetail.getUpdatedDate());
+                    vOrderDetail.setPriceEach(pOrderDetail.getPriceEach());
                     vOrderDetail.setUpdatedDate(new Date());
 
                     OrderDetail vSavedOrderDetail = gOrderDetailRepository.save(vOrderDetail);
