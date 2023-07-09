@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -36,9 +37,9 @@ public class Customer {
     @Column(name = "phoneNumber", unique = true)
     private String phoneNumber;
 
+    @Column(name = "email", unique = true)
     @NotNull(message = "Nhập email")
     @Email(message = "Email not valid")
-    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "address")
@@ -50,6 +51,7 @@ public class Customer {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "postalCode")
     @NotNull(message = "Nhập postalCode")
     @Size(min = 2, message = "Postal code at least 2 characters ")
     private String postalCode;
@@ -60,14 +62,14 @@ public class Customer {
     @Column(name = "credit_limit")
     private int creditLimit;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date createdDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;
