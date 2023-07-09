@@ -27,7 +27,7 @@ public class Order {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customers_id", nullable = false)
     private Customer customer;
     @Temporal(TemporalType.TIMESTAMP)
 
@@ -41,20 +41,20 @@ public class Order {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date requiredDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "order_date", nullable = true, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date orderDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "shipped_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date shippedDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;

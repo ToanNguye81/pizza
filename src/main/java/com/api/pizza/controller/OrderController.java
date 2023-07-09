@@ -58,7 +58,7 @@ public class OrderController {
     }
 
     // get order by id
-    @GetMapping("orders/{orderId}")
+    @GetMapping("/orders/{orderId}")
     public ResponseEntity<Object> getOrderById(@PathVariable Integer orderId) {
         Optional<Order> vOrderData = gOrderRepository.findById(orderId);
         if (vOrderData.isPresent()) {
@@ -75,7 +75,7 @@ public class OrderController {
     }
 
     // create new order
-    @PostMapping("customers/{customerId}/orders")
+    @PostMapping("/customers/{customerId}/orders")
     public ResponseEntity<Object> createNewOrder(
             @Valid @RequestBody Order pOrder,
             @PathVariable Integer customerId) {
@@ -84,11 +84,11 @@ public class OrderController {
             try {
                 Order vOrder = new Order();
                 vOrder.setComments(pOrder.getComments());
-                vOrder.setCustomer(vCustomerData.get());
-                vOrder.setOrderDate(pOrder.getOrderDate());
+                vOrder.setOrderDate(new Date());
                 vOrder.setRequiredDate(pOrder.getRequiredDate());
                 vOrder.setShippedDate(pOrder.getShippedDate());
                 vOrder.setStatus(pOrder.getStatus());
+                vOrder.setCustomer(vCustomerData.get());
                 // save order & return
                 Order vSavedOrder = gOrderRepository.save(vOrder);
                 return new ResponseEntity<>(vSavedOrder, HttpStatus.CREATED);
@@ -104,7 +104,7 @@ public class OrderController {
     }
 
     // Update order by id
-    @PutMapping("customers/{customerId}/orders/{orderId}")
+    @PutMapping("/customers/{customerId}/orders/{orderId}")
     public ResponseEntity<Object> updateOrder(
             @PathVariable Integer customerId,
             @PathVariable Integer orderId,
