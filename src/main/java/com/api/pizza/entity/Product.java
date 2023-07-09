@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "products")
 public class Product {
 
     @Id
@@ -21,12 +21,12 @@ public class Product {
     @Column(name = "id", unique = true)
     private int id;
 
-    @Column(name = "product_code")
+    @Column(name = "product_code", unique = true)
     @NotNull(message = "input product code")
     @Size(min = 2, message = "input product code at least 2 characters")
     private String productCode;
 
-    @Column(name = "product_name")
+    @Column(name = "product_name", unique = true)
     @NotNull(message = "input product name")
     @Size(min = 2, message = "input product name at least 2 characters")
     private String productName;
@@ -47,8 +47,8 @@ public class Product {
     private BigDecimal buyPrice;
 
     @ManyToOne
+    @JoinColumn(name = "productLines_id", nullable = false)
     @JsonIgnore
-    @JoinColumn(name = "product_line_id", nullable = false)
     private ProductLine productLine;
 
     @Temporal(TemporalType.TIMESTAMP)

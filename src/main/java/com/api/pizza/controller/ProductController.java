@@ -38,7 +38,7 @@ public class ProductController {
     IProductLineRepository gProductLineRepository;
 
     // get all Product
-    @GetMapping("products")
+    @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProduct(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -58,7 +58,7 @@ public class ProductController {
     }
 
     // get product by id
-    @GetMapping("products/{productId}")
+    @GetMapping("/products/{productId}")
     public ResponseEntity<Object> getProductById(@PathVariable Integer productId) {
         Optional<Product> vProductData = gProductRepository.findById(productId);
         if (vProductData.isPresent()) {
@@ -75,7 +75,7 @@ public class ProductController {
     }
 
     // create new product
-    @PostMapping("product-lines/{productLineId}/products")
+    @PostMapping("/product-lines/{productLineId}/products")
     public ResponseEntity<Object> createNewProduct(@Valid @RequestBody Product pProduct,
             @PathVariable Integer productLineId) {
         Optional<ProductLine> vProductLineData = gProductLineRepository.findById(productLineId);
@@ -108,7 +108,7 @@ public class ProductController {
     }
 
     // Update product by id
-    @PutMapping("product-lines/{productLineId}/products/{productId}")
+    @PutMapping("/product-lines/{productLineId}/products/{productId}")
     public ResponseEntity<Object> updateProduct(
             @PathVariable Integer productLineId,
             @PathVariable Integer productId,
@@ -147,7 +147,7 @@ public class ProductController {
     }
 
     // Delete product by id
-    @DeleteMapping("products/{productId}")
+    @DeleteMapping("/products/{productId}")
     private ResponseEntity<Object> deleteProductById(@PathVariable Integer productId) {
         Optional<Product> vProductData = gProductRepository.findById(productId);
         if (vProductData.isPresent()) {
