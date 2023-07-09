@@ -61,7 +61,7 @@ public class ProductLineController {
             ProductLine vProductLine = new ProductLine();
 
             vProductLine.setDescription(pProductLine.getDescription());
-            vProductLine.setProductLine(pProductLine.getProductLine());
+            vProductLine.setProducts(pProductLine.getProducts());
             vProductLine.setCreatedDate(new Date());
 
             ProductLine vProductLineSave = gProductLineRepository.save(vProductLine);
@@ -102,7 +102,7 @@ public class ProductLineController {
                 ProductLine vProductLine = vProductLineData.get();
 
                 vProductLine.setDescription(pProductLine.getDescription());
-                vProductLine.setProductLine(pProductLine.getProductLine());
+                vProductLine.setProducts(pProductLine.getProducts());
                 vProductLine.setUpdatedDate(new Date());
 
                 ProductLine vProductLineSave = gProductLineRepository.save(vProductLine);

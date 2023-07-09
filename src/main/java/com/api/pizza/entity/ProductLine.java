@@ -1,9 +1,9 @@
 package com.api.pizza.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "productLines")
 public class ProductLine {
 
     @Id
@@ -22,10 +22,9 @@ public class ProductLine {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "productLines", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "product_line_id", nullable = false)
-    private ProductLine productLine;
+    @OneToMany(mappedBy = "productLine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Product> products;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true)
@@ -56,10 +55,6 @@ public class ProductLine {
         this.id = id;
     }
 
-    public void setProductLine(ProductLine productLine) {
-        this.productLine = productLine;
-    }
-
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
@@ -76,12 +71,16 @@ public class ProductLine {
         return id;
     }
 
-    public ProductLine getProductLine() {
-        return productLine;
-    }
-
     public Date getUpdatedDate() {
         return updatedDate;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Product> getProducts() {
+        return products;
     }
 
 }
