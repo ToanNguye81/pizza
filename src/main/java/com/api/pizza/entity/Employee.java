@@ -46,14 +46,14 @@ public class Employee {
     @Column(name = "job_title")
     private String jobTitle;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date createdDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date updatedDate;
