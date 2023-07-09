@@ -31,7 +31,7 @@ public class Payment {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customers_id", nullable = false)
     private Customer customer;
 
     public Payment() {

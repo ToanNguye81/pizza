@@ -57,7 +57,7 @@ public class PaymentController {
     }
 
     // get payment by id
-    @GetMapping("payments/{paymentId}")
+    @GetMapping("/payments/{paymentId}")
     public ResponseEntity<Object> getPaymentById(@PathVariable Integer paymentId) {
         Optional<Payment> vPaymentData = gPaymentRepository.findById(paymentId);
         if (vPaymentData.isPresent()) {
@@ -74,7 +74,7 @@ public class PaymentController {
     }
 
     // create new payment
-    @PostMapping("customers/{customerId}/payments")
+    @PostMapping("/customers/{customerId}/payments")
     public ResponseEntity<Object> createNewPayment(@Valid @RequestBody Payment pPayment,
             @PathVariable Integer customerId) {
         Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
@@ -100,7 +100,7 @@ public class PaymentController {
     }
 
     // Update payment by id
-    @PutMapping("customers/{customerId}/payments/{paymentId}")
+    @PutMapping("/customers/{customerId}/payments/{paymentId}")
     public ResponseEntity<Object> updatePayment(
             @PathVariable Integer customerId,
             @PathVariable Integer paymentId,
