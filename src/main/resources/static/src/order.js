@@ -1,76 +1,90 @@
-let gCustomerId = 0;
 let gOrderId = 0;
-// customer
-$.get(`/customers`, loadCustomerToSelect);
-$.get(`/orders`, loadOrderToTable);
+let gOrderDetailId = 0;
+let gCustomerId = 0;
+// order
+$.get(`/orders`, loadOrderToSelect);
+$.get(`/order-details`, loadOrderDetailToTable);
 let customerSelectElement = $("#select-customer");
-function loadCustomerToSelect(paramCustomer) {
-  paramCustomer.forEach((customer) => {
+let orderSelectElement = $("#select-order");
+
+function loadOrderToSelect(pOrder) {
+  pOrder.forEach((order) => {
     $("<option>", {
-      text: customer.fullName,
+      text: order.comments,
+      value: order.id,
+    }).appendTo(orderSelectElement);
+  });
+}
+
+function loadCustomerToSelect(pCustomer) {
+  pCustomer.forEach((customer) => {
+    $("<option>", {
+      text: customer.comments,
       value: customer.id,
     }).appendTo(customerSelectElement);
   });
 }
-customerSelectElement.change(onGetCustomerChange);
-function onGetCustomerChange(event) {
-  gCustomerId = event.target.value;
-  if (gCustomerId == 0) {
-    $.get(`/orders`, loadOrderToTable);
+
+orderSelectElement.change(onGetOrderChange);
+function onGetOrderChange(event) {
+  gOrderId = event.target.value;
+  if (gOrderId == 0) {
+    $.get(`/order-details`, loadOrderDetailToTable);
   } else {
-    $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
+    $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
   }
 }
 
-let customer = {
-  newCustomer: {
-    fullName: "",
-    email: "",
-    phone: "",
-    address: "",
+let order = {
+  newOrder: {
+    status: "",
+    comments: "",
+    requiredDate: "",
+    orderDate: "",
+    shippedDate: "",
   },
-  onCreateNewCustomerClick() {
-    gCustomerId = 0;
-    $("#modal-create-customer").modal("show");
+  onCreateNewOrderClick() {
+    gOrderId = 0;
+    $("#modal-create-order").modal("show");
   },
-  onUpdateCustomerClick() {
-    if (gCustomerId != 0) {
-      $("#modal-create-customer").modal("show");
-      $.get(`/customers/${gCustomerId}`, loadCustomerToInput);
+  onUpdateOrderClick() {
+    if (gOrderId != 0) {
+      $("#modal-create-order").modal("show");
+      $.get(`/orders/${gOrderId}`, loadOrderToInput);
     } else {
-      alert("Please select a customer to update");
+      alert("Please select a order to update");
     }
   },
-  onSaveCustomerClick() {
-    this.newCustomer = {
+  onSaveOrderClick() {
+    this.newOrder = {
       fullName: $("#input-fullName").val().trim(),
       email: $("#input-email").val().trim(),
       phone: $("#input-phone").val().trim(),
       address: $("#input-address").val().trim(),
     };
-    if (gCustomerId == 0) {
-      if (validateCustomer(this.newCustomer)) {
+    if (gOrderId == 0) {
+      if (validateOrder(this.newOrder)) {
         $.ajax({
-          url: `/customers`,
+          url: `/orders`,
           method: "POST",
           contentType: "application/json",
-          data: JSON.stringify(this.newCustomer),
+          data: JSON.stringify(this.newOrder),
           success: () => {
-            alert("successfully create new customer");
+            alert("successfully create new order");
             location.reload();
           },
           error: (err) => alert(err.responseText),
         });
       }
     } else {
-      if (validateCustomer(this.newCustomer)) {
+      if (validateOrder(this.newOrder)) {
         $.ajax({
-          url: `/customers/${gCustomerId}`,
+          url: `/orders/${gOrderId}`,
           method: "PUT",
           contentType: "application/json",
-          data: JSON.stringify(this.newCustomer),
+          data: JSON.stringify(this.newOrder),
           success: () => {
-            alert("successfully update customer with id: " + gCustomerId);
+            alert("successfully update order with id: " + gOrderId);
             location.reload();
           },
           error: (err) => alert(err.responseText),
@@ -78,34 +92,34 @@ let customer = {
       }
     }
   },
-  onDeleteCustomerClick() {
-    if (gCustomerId != 0) {
-      $("#modal-delete-customer").modal("show");
+  onDeleteOrderClick() {
+    if (gOrderId != 0) {
+      $("#modal-delete-order").modal("show");
     } else {
-      alert("Please select a customer to delete");
+      alert("Please select a order to delete");
     }
   },
-  onDeleteAllCustomerClick() {
-    gCustomerId = 0;
-    $("#modal-delete-customer").modal("show");
+  onDeleteAllOrderClick() {
+    gOrderId = 0;
+    $("#modal-delete-order").modal("show");
   },
-  onConfirmDeleteCustomerClick() {
-    if (gCustomerId != 0) {
+  onConfirmDeleteOrderClick() {
+    if (gOrderId != 0) {
       $.ajax({
-        url: `/customers/${gCustomerId}`,
+        url: `/orders/${gOrderId}`,
         method: "delete",
         success: () => {
-          alert("successfully delete customer with id:" + gCustomerId);
+          alert("successfully delete order with id:" + gOrderId);
           location.reload();
         },
         error: (err) => alert(err.responseText),
       });
     } else {
       $.ajax({
-        url: `/customers`,
+        url: `/orders`,
         method: "delete",
         success: () => {
-          alert("successfully delete all customers");
+          alert("successfully delete all orders");
           location.reload();
         },
         error: (err) => alert(err.responseText),
@@ -114,45 +128,45 @@ let customer = {
   },
 };
 
-$("#btn-create-customer").click(customer.onCreateNewCustomerClick);
-$("#btn-update-customer").click(customer.onUpdateCustomerClick);
-$("#btn-save-customer").click(customer.onSaveCustomerClick);
-$("#btn-delete-customer").click(customer.onDeleteCustomerClick);
-$("#btn-delete-all-customer").click(customer.onDeleteAllCustomerClick);
-$("#btn-confirm-delete-customer").click(customer.onConfirmDeleteCustomerClick);
+$("#btn-create-order").click(order.onCreateNewOrderClick);
+$("#btn-update-order").click(order.onUpdateOrderClick);
+$("#btn-save-order").click(order.onSaveOrderClick);
+$("#btn-delete-order").click(order.onDeleteOrderClick);
+$("#btn-delete-all-order").click(order.onDeleteAllOrderClick);
+$("#btn-confirm-delete-order").click(order.onConfirmDeleteOrderClick);
 
-function loadCustomerToInput(paramCustomer) {
-  $("#input-fullName").val(paramCustomer.fullName);
-  $("#input-email").val(paramCustomer.email);
-  $("#input-phone").val(paramCustomer.phone);
-  $("#input-address").val(paramCustomer.address);
+function loadOrderToInput(pOrder) {
+  $("#input-fullName").val(pOrder.fullName);
+  $("#input-email").val(pOrder.email);
+  $("#input-phone").val(pOrder.phone);
+  $("#input-address").val(pOrder.address);
 }
 
-function validateCustomer(paramCustomer) {
+function validateOrder(pOrder) {
   let vResult = true;
   try {
-    if (paramCustomer.fullName == "") {
+    if (pOrder.fullName == "") {
       vResult = false;
       throw `full name can't be empty`;
     }
 
-    if (paramCustomer.email == "") {
+    if (pOrder.email == "") {
       vResult = false;
       throw ` email can't be empty`;
     }
-    if (!validateEmail(paramCustomer.email)) {
+    if (!validateEmail(pOrder.email)) {
       vResult = false;
       throw `must need right email`;
     }
-    if (paramCustomer.phone == "") {
+    if (pOrder.phone == "") {
       vResult = false;
       throw `phone can't be empty`;
     }
-    if (paramCustomer.phone.length < 10 || isNaN(paramCustomer.phone)) {
+    if (pOrder.phone.length < 10 || isNaN(pOrder.phone)) {
       vResult = false;
       throw `Cần nhập đúng kiểu số điện thoại phải không có chữ cái và đúng 10 số`;
     }
-    if (paramCustomer.address == "") {
+    if (pOrder.address == "") {
       vResult = false;
       throw `Address can't be empty`;
     }
@@ -187,14 +201,14 @@ let orderTable = $("#order-table").DataTable({
   ],
 });
 
-function loadOrderToTable(paramOrder) {
+function loadOrderDetailToTable(pOrderDetail) {
   orderTable.clear();
-  orderTable.rows.add(paramOrder);
+  orderTable.rows.add(pOrderDetail);
   orderTable.draw();
 }
 
-let order = {
-  newOrder: {
+let orderDetail = {
+  newOrderDetail: {
     orderCode: "",
     pizzaSize: "",
     pizzaType: "",
@@ -202,9 +216,9 @@ let order = {
     price: "",
     paid: "",
   },
-  onNewOrderClick() {
-    gOrderId = 0;
-    this.newOrder = {
+  onNewOrderDetailClick() {
+    gOrderDetailId = 0;
+    this.newOrderDetail = {
       orderCode: $("#input-order-Code").val().trim(),
       pizzaSize: $("#input-pizza-size").val().trim(),
       pizzaType: $("#input-pizza-type").val().trim(),
@@ -212,32 +226,32 @@ let order = {
       price: $("#input-Price").val().trim(),
       paid: $("#input-Paid").val().trim(),
     };
-    if (validateOrder(this.newOrder)) {
-      if (gCustomerId == 0) {
-        alert(`Please select customer to create a new order`);
+    if (validateOrderDetail(this.newOrderDetail)) {
+      if (gOrderId == 0) {
+        alert(`Please select order to create a new order`);
       } else {
         $.ajax({
-          url: `/customers/${gCustomerId}/orders`,
+          url: `/orders/${gOrderId}/order-details`,
           method: "POST",
-          data: JSON.stringify(this.newOrder),
+          data: JSON.stringify(this.newOrderDetail),
           contentType: "application/json",
           success: () => {
-            alert(`Order created successfully`);
-            $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
-            resetOrderInput();
+            alert(`OrderDetail created successfully`);
+            $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
+            resetOrderDetailInput();
           },
         });
       }
     }
   },
-  onEditOrderClick() {
+  onEditOrderDetailClick() {
     vSelectedRow = $(this).parents("tr");
     vSelectedData = orderTable.row(vSelectedRow).data();
-    gOrderId = vSelectedData.id;
-    $.get(`/orders/${gOrderId}`, loadOrderToInput);
+    gOrderDetailId = vSelectedData.id;
+    $.get(`/order-details/${gOrderDetailId}`, loadOrderDetailToInput);
   },
-  onUpdateOrderClick() {
-    this.newOrder = {
+  onUpdateOrderDetailClick() {
+    this.newOrderDetail = {
       orderCode: $("#input-order-Code").val().trim(),
       pizzaSize: $("#input-pizza-size").val().trim(),
       pizzaType: $("#input-pizza-type").val().trim(),
@@ -245,58 +259,60 @@ let order = {
       price: $("#input-Price").val().trim(),
       paid: $("#input-Paid").val().trim(),
     };
-    if (validateOrder(this.newOrder)) {
-      if (gCustomerId == 0) {
-        alert(`Please select customer to update a new order`);
+    if (validateOrderDetail(this.newOrderDetail)) {
+      if (gOrderId == 0) {
+        alert(`Please select order to update a new order`);
       } else {
         $.ajax({
-          url: `/orders/${gOrderId}`,
+          url: `/order-details/${gOrderDetailId}`,
           method: "PUT",
-          data: JSON.stringify(this.newOrder),
+          data: JSON.stringify(this.newOrderDetail),
           contentType: "application/json",
           success: () => {
-            alert(`Order updated successfully`);
-            $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
-            resetOrderInput();
+            alert(`OrderDetail updated successfully`);
+            $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
+            resetOrderDetailInput();
           },
         });
       }
     }
   },
-  onDeleteCustomerByIdClick() {
+  onDeleteOrderByIdClick() {
     $("#modal-delete-order").modal("show");
     vSelectedRow = $(this).parents("tr");
     vSelectedData = orderTable.row(vSelectedRow).data();
-    gOrderId = vSelectedData.id;
+    gOrderDetailId = vSelectedData.id;
   },
-  onDeleteAllOrderClick() {
+  onDeleteAllOrderDetailClick() {
     $("#modal-delete-order").modal("show");
-    gOrderId = 0;
+    gOrderDetailId = 0;
   },
-  onOrderConfirmDeleteClick() {
-    if (gOrderId == 0) {
+  onOrderDetailConfirmDeleteClick() {
+    if (gOrderDetailId == 0) {
       $.ajax({
-        url: `/orders`,
+        url: `/order-details`,
         method: "delete",
         success: () => {
-          alert("All Order was successfully deleted");
-          // $.get(`/orders`, loadOrderToTable);
-          gCustomerId == 0
-            ? $.get(`/orders`, loadOrderToTable)
-            : $.get(`customers/${gCustomerId}/orders`, loadOrderToTable);
+          alert("All OrderDetail was successfully deleted");
+          // $.get(`/order-details`, loadOrderDetailToTable);
+          gOrderId == 0
+            ? $.get(`/order-details`, loadOrderDetailToTable)
+            : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
           $("#modal-delete-order").modal("hide");
         },
         error: (err) => alert(err.responseText),
       });
     } else {
       $.ajax({
-        url: `/orders/${gOrderId}`,
+        url: `/order-details/${gOrderDetailId}`,
         method: "delete",
         success: () => {
-          alert(`Order with id ${gOrderId} was successfully deleted`);
-          gCustomerId == 0
-            ? $.get(`/orders`, loadOrderToTable)
-            : $.get(`customers/${gCustomerId}/orders`, loadOrderToTable);
+          alert(
+            `OrderDetail with id ${gOrderDetailId} was successfully deleted`
+          );
+          gOrderId == 0
+            ? $.get(`/order-details`, loadOrderDetailToTable)
+            : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
 
           $("#modal-delete-order").modal("hide");
         },
@@ -306,33 +322,33 @@ let order = {
   },
 };
 
-$("#create-order").click(order.onNewOrderClick);
-$("#update-order").click(order.onUpdateOrderClick);
-$("#delete-all-order").click(order.onDeleteAllOrderClick);
-$("#btn-confirm-delete-order").click(order.onOrderConfirmDeleteClick);
-$("#order-table").on("click", ".fa-edit", order.onEditOrderClick);
-$("#order-table").on("click", ".fa-trash", order.onDeleteCustomerByIdClick);
+$("#create-order").click(order.onNewOrderDetailClick);
+$("#update-order").click(order.onUpdateOrderDetailClick);
+$("#delete-all-order").click(order.onDeleteAllOrderDetailClick);
+$("#btn-confirm-delete-order").click(order.onOrderDetailConfirmDeleteClick);
+$("#order-table").on("click", ".fa-edit", order.onEditOrderDetailClick);
+$("#order-table").on("click", ".fa-trash", order.onDeleteOrderByIdClick);
 
-function validateOrder(paramOrder) {
+function validateOrderDetail(pOrderDetail) {
   let vResult = true;
   try {
-    if (paramOrder.orderCode == "") {
+    if (pOrderDetail.orderCode == "") {
       vResult = false;
-      throw `Order code can't empty`;
+      throw `OrderDetail code can't empty`;
     }
-    if (paramOrder.pizzaSize == "") {
+    if (pOrderDetail.pizzaSize == "") {
       vResult = false;
       throw `Pizza Size can't empty`;
     }
-    if (paramOrder.pizzaType == "") {
+    if (pOrderDetail.pizzaType == "") {
       vResult = false;
       throw `Pizza Type can't empty`;
     }
-    if (paramOrder.price == "" || isNaN(paramOrder.price)) {
+    if (pOrderDetail.price == "" || isNaN(pOrderDetail.price)) {
       vResult = false;
       throw `Price cant' be empty or must is number`;
     }
-    if (paramOrder.paid == "" || isNaN(paramOrder.paid)) {
+    if (pOrderDetail.paid == "" || isNaN(pOrderDetail.paid)) {
       vResult = false;
       throw `Paid cant' be empty or must is number`;
     }
@@ -342,16 +358,16 @@ function validateOrder(paramOrder) {
   return vResult;
 }
 
-function loadOrderToInput(paramOrder) {
-  $("#input-order-Code").val(paramOrder.orderCode);
-  $("#input-pizza-size").val(paramOrder.pizzaSize);
-  $("#input-pizza-type").val(paramOrder.pizzaType);
-  $("#input-voucher").val(paramOrder.voucherCode);
-  $("#input-Price").val(paramOrder.price);
-  $("#input-Paid").val(paramOrder.paid);
+function loadOrderDetailToInput(pOrderDetail) {
+  $("#input-order-Code").val(pOrderDetail.orderCode);
+  $("#input-pizza-size").val(pOrderDetail.pizzaSize);
+  $("#input-pizza-type").val(pOrderDetail.pizzaType);
+  $("#input-voucher").val(pOrderDetail.voucherCode);
+  $("#input-Price").val(pOrderDetail.price);
+  $("#input-Paid").val(pOrderDetail.paid);
 }
 
-function resetOrderInput() {
+function resetOrderDetailInput() {
   $("#input-order-Code").val("");
   $("#input-pizza-size").val("");
   $("#input-pizza-type").val("");
