@@ -80,7 +80,7 @@
             <a href="/#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user1-128x128.jpg" alt="Customer Avatar" class="img-size-50 mr-3 img-circle" />
+                <img src="dist/img/user1-128x128.jpg" alt="order Avatar" class="img-size-50 mr-3 img-circle" />
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     Brad Diesel
@@ -98,7 +98,7 @@
             <a href="/#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user8-128x128.jpg" alt="Customer Avatar" class="img-size-50 img-circle mr-3" />
+                <img src="dist/img/user8-128x128.jpg" alt="order Avatar" class="img-size-50 img-circle mr-3" />
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     John Pierce
@@ -116,7 +116,7 @@
             <a href="/#" class="dropdown-item">
               <!-- Message Start -->
               <div class="media">
-                <img src="dist/img/user3-128x128.jpg" alt="Customer Avatar" class="img-size-50 img-circle mr-3" />
+                <img src="dist/img/user3-128x128.jpg" alt="order Avatar" class="img-size-50 img-circle mr-3" />
                 <div class="media-body">
                   <h3 class="dropdown-item-title">
                     Nora Silvester
@@ -173,7 +173,7 @@
     <aside style="min-height: 100vh; position: fixed; top: 0; left: 0;" class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Sidebar -->
       <div class="sidebar">
-        <!-- Sidebar customer panel (optional) -->
+        <!-- Sidebar order panel (optional) -->
         <div class="info">
           <a href="/#" class="d-block text-center">ADMIN TONY</a>
         </div>
@@ -201,9 +201,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/customer.html" class="nav-link">
+            <a href="/order.html" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Customer</p>
+              <p>order</p>
             </a>
           </li>
           <li class="nav-item">
@@ -227,7 +227,7 @@
           <li class="nav-item">
             <a href="/order.html" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
-              <p>Order</p>
+              <p>Order Detail</p>
             </a>
           </li>
           <li class="nav-item">
@@ -252,12 +252,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Order</h1>
+            <h1 class="m-0">Order Detail</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/#">Home</a></li>
-              <li class="breadcrumb-item active">Order</li>
+              <li class="breadcrumb-item active">Order Detail</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -268,24 +268,24 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <h2 style="text-align: center">Quản lý order</h2>
+        <h2 style="text-align: center">Order Management</h2>
         <div class="jumbotron container">
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="">Chọn khách hàng</label>
+              <label for="">Choose order</label>
             </div>
             <div class="col-sm-9">
-              <select name="" id="select-customer" class="form-control">
-                <option value="0">Chọn khách hàng</option>
+              <select name="" id="select-order" class="form-control">
+                <option value="0">Choose order</option>
               </select>
             </div>
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="order-code">Order Code</label>
+              <label for="order-code">Order Detail Code</label>
             </div>
             <div class="col-sm-9">
-              <input type="text" id="input-order-Code" name="discount" placeholder="Order Code" class="form-control" />
+              <input type="text" id="input-order-Code" name="discount" placeholder="Order Detail Code" class="form-control" />
             </div>
           </div>
           <div class="row form-group">
@@ -330,28 +330,28 @@
           </div>
           <div class="row mb-3 pull-right">
             <div class="col-sm-12 d-flex justify-content-around">
-              <button class="btn btn-primary" id="btn-create-customer">
-                New Customer
+              <button class="btn btn-primary" id="btn-create-order">
+                New order
               </button>
-              <button id="btn-update-customer" class="btn btn-info">
-                Update Customer
+              <button id="btn-update-order" class="btn btn-info">
+                Update order
               </button>
-              <button class="btn btn-danger" id="btn-delete-customer">
-                Delete Customer
+              <button class="btn btn-danger" id="btn-delete-order">
+                Delete order
               </button>
-              <button class="btn btn-danger" id="btn-delete-all-customer">
-                Delete ALL Customer
+              <button class="btn btn-danger" id="btn-delete-all-order">
+                Delete ALL order
               </button>
             </div>
           </div>
           <div class="row pull-right">
             <div class="col-sm-12 d-flex justify-content-around">
               <button class="btn btn-primary" id="create-order">
-                Create Order
+                Create Order Detail
               </button>
-              <button id="update-order" class="btn btn-info">Update Order</button>
+              <button id="update-order" class="btn btn-info">Update Order Detail</button>
               <button class="btn btn-danger" id="delete-all-order">
-                Delete ALL Order
+                Delete ALL Order Detail
               </button>
             </div>
           </div>
@@ -359,7 +359,7 @@
         <table class="table table-bordered table-striped table-hover text-center" id="order-table">
           <thead>
             <tr>
-              <th>Order Code</th>
+              <th>Order Detail Code</th>
               <th>Pizza Size</th>
               <th>Pizza Type</th>
               <th>Voucher Code</th>
@@ -395,11 +395,11 @@
           </div>
         </div>
         <!-- Modal create-->
-        <div class="modal hide" id="modal-create-customer">
+        <div class="modal hide" id="modal-create-order">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title text-primary">Manage Customer</h5>
+                <h5 class="modal-title text-primary">Manage order</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -442,31 +442,31 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                   Close
                 </button>
-                <button type="button" class="btn btn-primary" id="btn-save-customer">
+                <button type="button" class="btn btn-primary" id="btn-save-order">
                   Save Data
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <!-- Modal delete customer-->
-        <div class="modal fade" id="modal-delete-customer">
+        <!-- Modal delete order-->
+        <div class="modal fade" id="modal-delete-order">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title text-danger">Xác nhận xóa Customer</h5>
+                <h5 class="modal-title text-danger">Xác nhận xóa order</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <h6 class="text-danger">Bạn có chác muốn xóa Customer</h6>
+                <h6 class="text-danger">Bạn có chác muốn xóa order</h6>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                   Close
                 </button>
-                <button type="button" class="btn btn-danger" id="btn-confirm-delete-customer">
+                <button type="button" class="btn btn-danger" id="btn-confirm-delete-order">
                   Delete
                 </button>
               </div>

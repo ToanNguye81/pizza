@@ -44,13 +44,13 @@ public class PaymentController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Payment> countryPage = gPaymentRepository.findAll(pageable);
-            List<Payment> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<Payment> paymentPage = gPaymentRepository.findAll(pageable);
+            List<Payment> paymentList = paymentPage.getContent();
+            Long totalElement = paymentPage.getTotalElements();
 
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(paymentList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -71,6 +71,12 @@ public class PaymentController {
             Payment vPaymentNull = new Payment();
             return new ResponseEntity<>(vPaymentNull, HttpStatus.NOT_FOUND);
         }
+    }
+
+    // Get Payment by customerId
+    @GetMapping("/customers/{customerId}/payments")
+    public List<Payment> getPaymentByCustomerId(@PathVariable Integer customerId) {
+        return gPaymentRepository.findByCustomerId(customerId);
     }
 
     // create new payment
@@ -99,7 +105,7 @@ public class PaymentController {
 
     }
 
-    // Update payment by id
+    // Update payment by paymentId and customerId
     @PutMapping("/customers/{customerId}/payments/{paymentId}")
     public ResponseEntity<Object> updatePayment(
             @PathVariable Integer customerId,
@@ -114,6 +120,7 @@ public class PaymentController {
                     vPayment.setAmount(pPayment.getAmount());
                     vPayment.setCheckNumber(pPayment.getCheckNumber());
                     vPayment.setPaymentDate(pPayment.getPaymentDate());
+                    vPayment.setCustomer(vCustomerData.get());
                     Payment vSavedPayment = gPaymentRepository.save(vPayment);
                     return new ResponseEntity<>(vSavedPayment, HttpStatus.OK);
                 } catch (Exception e) {
@@ -124,6 +131,29 @@ public class PaymentController {
                 Payment vPaymentNull = new Payment();
                 return new ResponseEntity<>(vPaymentNull, HttpStatus.NOT_FOUND);
             }
+        } else {
+            Customer vCustomerNull = new Customer();
+            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Update payment by only paymentId
+    @PutMapping(value = "/payments/{paymentId}")
+    public ResponseEntity<Object> updatePaymentById(
+            @PathVariable Integer paymentId,
+            @RequestBody Payment pPayment) {
+        // find payment by id
+        Optional<Payment> paymentData = gPaymentRepository.findById(paymentId);
+        if (paymentData.isPresent()) {
+            // get existed payment
+            Payment vPayment = paymentData.get();
+            // update payment
+            vPayment.setAmount(pPayment.getAmount());
+            vPayment.setCheckNumber(pPayment.getCheckNumber());
+            vPayment.setPaymentDate(pPayment.getPaymentDate());
+            Payment savedPayment = gPaymentRepository.save(vPayment);
+            // return
+            return new ResponseEntity<>(savedPayment, HttpStatus.OK);
         } else {
             Customer vCustomerNull = new Customer();
             return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);

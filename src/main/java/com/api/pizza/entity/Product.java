@@ -54,13 +54,13 @@ public class Product {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updatedDate;
 
     public Product() {

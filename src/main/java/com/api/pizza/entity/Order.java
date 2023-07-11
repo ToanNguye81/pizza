@@ -38,25 +38,25 @@ public class Order {
 
     @Column(name = "required_date", nullable = true, updatable = false)
     @CreatedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date requiredDate;
 
     @Column(name = "order_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date orderDate;
 
     @Column(name = "shipped_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date shippedDate;
 
     @Column(name = "updated_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updatedDate;
 
     public Order() {

@@ -64,13 +64,13 @@ public class Customer {
     @Column(name = "created_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date createdDate;
 
     @Column(name = "updated_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updatedDate;
 
     // 1-n => customer-order

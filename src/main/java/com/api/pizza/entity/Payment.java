@@ -22,7 +22,7 @@ public class Payment {
     private int checkNumber;
 
     @Column(name = "payment_date")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date paymentDate;
 
     @Column(name = "amount")
