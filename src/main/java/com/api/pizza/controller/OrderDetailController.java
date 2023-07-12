@@ -74,6 +74,12 @@ public class OrderDetailController {
         }
     }
 
+    // Get order-detail by orderId
+    @GetMapping("/orders/{orderId}/order-details")
+    public List<OrderDetail> getOrderDetailByOrderId(@PathVariable Integer orderId) {
+        return gOrderDetailRepository.findByOrderId(orderId);
+    }
+
     // create new order-details
     @PostMapping("/orders/{orderId}/order-details")
     public ResponseEntity<Object> createNewOrderDetail(@Valid @RequestBody OrderDetail pOrderDetail,

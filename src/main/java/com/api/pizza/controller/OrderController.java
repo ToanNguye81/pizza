@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Customer;
 import com.api.pizza.entity.Order;
+import com.api.pizza.entity.Payment;
 import com.api.pizza.repository.ICustomerRepository;
 import com.api.pizza.repository.IOrderRepository;
 
@@ -74,6 +75,12 @@ public class OrderController {
         }
     }
 
+    // Get order by customerId
+    @GetMapping("/customers/{customerId}/orders")
+    public List<Order> getOrderByCustomerId(@PathVariable Integer customerId) {
+        return gOrderRepository.findByCustomerId(customerId);
+    }
+
     // create new order
     @PostMapping("/customers/{customerId}/orders")
     public ResponseEntity<Object> createNewOrder(
@@ -117,8 +124,10 @@ public class OrderController {
                     Order vOrder = vOrderData.get();
                     vOrder.setComments(pOrder.getComments());
                     vOrder.setRequiredDate(pOrder.getRequiredDate());
+                    vOrder.setOrderDate(pOrder.getOrderDate());
                     vOrder.setShippedDate(pOrder.getShippedDate());
                     vOrder.setStatus(pOrder.getStatus());
+
                     vOrder.setUpdatedDate(new Date());
                     vOrder.setCustomer(vCustomerData.get());
                     Order vSavedOrder = gOrderRepository.save(vOrder);
