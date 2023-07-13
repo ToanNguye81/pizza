@@ -29,7 +29,6 @@ public class Order {
     @JsonIgnore
     @JoinColumn(name = "customers_id", nullable = false)
     private Customer customer;
-    @Temporal(TemporalType.TIMESTAMP)
 
     // 1-n => order- orderDetail
     @JsonIgnore
@@ -37,31 +36,30 @@ public class Order {
     private List<OrderDetail> orderDetails;
 
     @Column(name = "required_date", nullable = true, updatable = false)
-    // @CreatedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-dd-mm")
     private Date requiredDate;
 
     @Column(name = "order_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    // @CreatedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @CreatedDate
+    @JsonFormat(pattern = "yyyy-dd-mm")
     private Date orderDate;
 
     @Column(name = "shipped_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    // @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-dd-mm")
     private Date shippedDate;
 
     @Column(name = "updated_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    // @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-dd-mm")
     private Date updatedDate;
 
     public Order() {
-        super();
         // TODO Auto-generated constructor stub
+        super();
     }
 
     public void setComments(String comments) {
@@ -96,16 +94,20 @@ public class Order {
         this.updatedDate = updatedDate;
     }
 
+    public void setOrderDetails(List<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public String getComments() {
         return comments;
     }
 
     public Customer getCustomer() {
         return customer;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Date getOrderDate() {
@@ -128,11 +130,8 @@ public class Order {
         return updatedDate;
     }
 
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
-
     public List<OrderDetail> getOrderDetails() {
         return orderDetails;
     }
+
 }

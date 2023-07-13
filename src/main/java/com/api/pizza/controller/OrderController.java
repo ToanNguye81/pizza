@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Customer;
 import com.api.pizza.entity.Order;
-import com.api.pizza.entity.Payment;
 import com.api.pizza.repository.ICustomerRepository;
 import com.api.pizza.repository.IOrderRepository;
 
@@ -94,6 +93,12 @@ public class OrderController {
                 vOrder.setOrderDate(new Date());
                 vOrder.setRequiredDate(pOrder.getRequiredDate());
                 vOrder.setShippedDate(pOrder.getShippedDate());
+                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
+                System.out.println(new Date());
+                System.out.println(pOrder.getRequiredDate());
+                System.out.println(pOrder.getShippedDate());
+                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
+
                 vOrder.setStatus(pOrder.getStatus());
                 vOrder.setCustomer(vCustomerData.get());
                 // save order & return
