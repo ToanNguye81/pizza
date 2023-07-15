@@ -37,24 +37,24 @@ public class Order {
 
     @Column(name = "required_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-dd-mm")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date requiredDate;
 
     @Column(name = "order_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
-    @JsonFormat(pattern = "yyyy-dd-mm")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date orderDate;
 
     @Column(name = "shipped_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-dd-mm")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date shippedDate;
 
     @Column(name = "updated_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-dd-mm")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date updatedDate;
 
     public Order() {
@@ -134,4 +134,9 @@ public class Order {
         return orderDetails;
     }
 
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "+++" + orderDate.toString() + " " + shippedDate.toString() + "++++++++";
+    }
 }

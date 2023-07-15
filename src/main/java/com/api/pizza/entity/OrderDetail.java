@@ -27,19 +27,24 @@ public class OrderDetail {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "orderDetails_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true, updatable = false)
     @CreatedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
     @LastModifiedDate
-    @JsonFormat(pattern = "yyyy-mm-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date updatedDate;
 
     public OrderDetail() {
@@ -57,6 +62,10 @@ public class OrderDetail {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public void setPriceEach(BigDecimal priceEach) {
@@ -93,5 +102,9 @@ public class OrderDetail {
 
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 }

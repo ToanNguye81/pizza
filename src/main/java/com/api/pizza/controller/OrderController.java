@@ -1,6 +1,7 @@
 package com.api.pizza.controller;
 
 import java.util.Date;
+// import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,7 +49,6 @@ public class OrderController {
             Page<Order> countryPage = gOrderRepository.findAll(pageable);
             List<Order> countryList = countryPage.getContent();
             Long totalElement = countryPage.getTotalElements();
-
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
                     .body(countryList);
@@ -64,6 +64,7 @@ public class OrderController {
         if (vOrderData.isPresent()) {
             try {
                 Order vOrder = vOrderData.get();
+                System.out.println(vOrder);
                 return new ResponseEntity<>(vOrder, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,12 +94,6 @@ public class OrderController {
                 vOrder.setOrderDate(new Date());
                 vOrder.setRequiredDate(pOrder.getRequiredDate());
                 vOrder.setShippedDate(pOrder.getShippedDate());
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-                System.out.println(new Date());
-                System.out.println(pOrder.getRequiredDate());
-                System.out.println(pOrder.getShippedDate());
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++");
-
                 vOrder.setStatus(pOrder.getStatus());
                 vOrder.setCustomer(vCustomerData.get());
                 // save order & return
@@ -132,7 +127,6 @@ public class OrderController {
                     vOrder.setOrderDate(pOrder.getOrderDate());
                     vOrder.setShippedDate(pOrder.getShippedDate());
                     vOrder.setStatus(pOrder.getStatus());
-
                     vOrder.setUpdatedDate(new Date());
                     vOrder.setCustomer(vCustomerData.get());
                     Order vSavedOrder = gOrderRepository.save(vOrder);

@@ -1,10 +1,13 @@
 let gCustomerId = "";
+let gProductId = "";
 let gOrderId = "";
 let gOrderDetailId = "";
 let customerSelectElement = $("#select-customer");
+let productSelectElement = $("#select-product");
 let orderSelectElement = $("#select-order");
 // order
 $.get(`/customers/${gCustomerId}`, loadCustomerToSelect);
+$.get(`/products/`, loadProductToSelect);
 
 //load customer to select
 function loadCustomerToSelect(pCustomer) {
@@ -15,13 +18,27 @@ function loadCustomerToSelect(pCustomer) {
     }).appendTo(customerSelectElement);
   });
 }
+//load customer to select
+function loadProductToSelect(pProduct) {
+  pProduct.forEach((product) => {
+    $("<option>", {
+      text: product.productName,
+      value: product.id,
+    }).appendTo(productSelectElement);
+  });
+}
 // event onChange customer select
 customerSelectElement.change(onGetCustomerChange);
+// event onChange customer select
+productSelectElement.change(onGetProductChange);
 // on get customer change
 function onGetCustomerChange(event) {
   gCustomerId = event.target.value;
   $.get(`/customers/${gCustomerId}/orders`, loadOrderToSelect);
   $("#customer-of-order").val($("#select-customer option:selected").text());
+}
+function onGetProductChange(event) {
+  gProductId = event.target.value;
 }
 
 $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
@@ -58,6 +75,7 @@ let order = {
     shippedDate: "",
   },
   onCreateNewOrderClick() {
+    console.log(this.newOrder);
     if (gCustomerId != "") {
       gOrderId = 0;
       $("#modal-create-order").modal("show");

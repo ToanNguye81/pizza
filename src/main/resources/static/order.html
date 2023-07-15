@@ -27,7 +27,7 @@
 <body>
   <div class="wrapper">
     <!-- Preloader -->
-     <div class="preloader flex-column justify-content-center align-items-center">
+    <div class="preloader flex-column justify-content-center align-items-center">
       <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60" />
     </div>
     <!-- Navbar -->
@@ -54,10 +54,10 @@
           </a>
           <div class="navbar-search-block">
             <form class="form-inline">
-              <div class="input-group input-group-sm">
+              <div class="inp-group inp-group-sm">
                 <input class="form-control form-control-navbar" type="search" placeholder="Search"
                   aria-label="Search" />
-                <div class="input-group-append">
+                <div class="inp-group-append">
                   <button class="btn btn-navbar" type="submit">
                     <i class="fas fa-search"></i>
                   </button>
@@ -170,7 +170,8 @@
     </nav>
     <!-- /.navbar -->
     <!-- Main Sidebar Container -->
-    <aside style="min-height: 100vh; position: fixed; top: 0; left: 0;" class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside style="min-height: 100vh; position: fixed; top: 0; left: 0;"
+      class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Sidebar -->
       <div class="sidebar">
         <!-- Sidebar order panel (optional) -->
@@ -292,50 +293,29 @@
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="order-code">Order Detail Code</label>
+              <label for="product">Product</label>
             </div>
             <div class="col-sm-9">
-              <input type="text" id="input-order-Code" name="discount" placeholder="Order Detail Code" class="form-control" />
+              <select name="" id="select-product" class="form-control">
+                <option value="">Choose product</option>
+              </select>
             </div>
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="Pizza Size">Pizza Size</label>
+              <label for="quantity-order">Quantity Order</label>
             </div>
             <div class="col-sm-9">
-              <input type="text" id="input-pizza-size" placeholder="Pizza Size" class="form-control" />
+              <input type="number" id="inp-quantity-order" name="discount" placeholder="Quantity order"
+                class="form-control" />
             </div>
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="Pizza type">Pizza type</label>
+              <label for="price-each">Price Each</label>
             </div>
             <div class="col-sm-9">
-              <input type="text" id="input-pizza-type" placeholder="Pizza type" class="form-control" />
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-sm-3">
-              <label for="voucher">Voucher</label>
-            </div>
-            <div class="col-sm-9">
-              <input type="text" id="input-voucher" placeholder="Voucher" class="form-control" />
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-sm-3">
-              <label for="Price">Price</label>
-            </div>
-            <div class="col-sm-9">
-              <input type="number" id="input-Price" placeholder="Price" class="form-control" />
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-sm-3">
-              <label for="Paid">Paid</label>
-            </div>
-            <div class="col-sm-9">
-              <input type="number" id="input-Paid" placeholder="Paid" class="form-control" />
+              <input type="number" id="inp-price-each" placeholder="Price each" class="form-control" />
             </div>
           </div>
           <div class="row mb-3 pull-right">
@@ -420,7 +400,7 @@
                     <label for="customer-of-order">Customer</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="text" id="customer-of-order" class="form-control" disabled/>
+                    <input type="text" id="customer-of-order" class="form-control" disabled />
                   </div>
                 </div>
                 <div class="row form-group">
@@ -428,7 +408,7 @@
                     <label for="order-date">Order date</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="date" id="inp-order-date" class="form-control"/>
+                    <input type="date" id="inp-order-date" class="form-control" />
                   </div>
                 </div>
                 <div class="row form-group">
@@ -436,7 +416,7 @@
                     <label for="required-date">Required date</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="date" id="inp-required-date" class="form-control"/>
+                    <input type="date" id="inp-required-date" class="form-control" />
                   </div>
                 </div>
                 <div class="row form-group">
@@ -444,7 +424,7 @@
                     <label for="shipped-date">Shipped date</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="date" id="inp-shipped-date" class="form-control"/>
+                    <input type="date" id="inp-shipped-date" class="form-control" />
                   </div>
                 </div>
                 <div class="row form-group">
@@ -452,7 +432,7 @@
                     <label for="status">Status</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="text" id="inp-status" class="form-control"/>
+                    <input type="text" id="inp-status" class="form-control" />
                   </div>
                 </div>
                 <div class="row form-group">
@@ -460,7 +440,7 @@
                     <label for="comment">Comment</label>
                   </div>
                   <div class="col-sm-8">
-                    <input type="comment" id="inp-comments" class="form-control"/>
+                    <input type="comment" id="inp-comments" class="form-control" />
                   </div>
                 </div>
               </div>
@@ -504,7 +484,7 @@
     <!-- /.content -->
     <!-- /.content-wrapper -->
   </div>
-  
+
   <footer class="main-footer">
     <strong>Copyright &copy; 2014-2021 <a href="/https://adminlte.io">AdminLTE.io</a>.</strong>
     All rights reserved.
