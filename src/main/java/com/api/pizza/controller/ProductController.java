@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Product;
+import com.api.pizza.entity.Product;
 import com.api.pizza.entity.ProductLine;
 import com.api.pizza.repository.IProductLineRepository;
 import com.api.pizza.repository.IProductRepository;
@@ -55,6 +56,12 @@ public class ProductController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // Get Product by productLineId
+    @GetMapping("/product-lines/{productLineId}/products")
+    public List<Product> getProductByProductLineId(@PathVariable Integer productLineId) {
+        return gProductRepository.findByProductLineId(productLineId);
     }
 
     // get product by id

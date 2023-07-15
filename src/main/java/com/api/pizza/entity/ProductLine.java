@@ -19,6 +19,9 @@ public class ProductLine {
     @Column(name = "id", unique = true)
     private int id;
 
+    @Column(name = "productLine", unique = true)
+    private String productLine;
+
     @Column(name = "description")
     private String description;
 
@@ -29,13 +32,13 @@ public class ProductLine {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = true)
     @CreatedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_date", nullable = true)
     @LastModifiedDate
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedDate;
 
     public ProductLine() {
@@ -69,6 +72,14 @@ public class ProductLine {
 
     public int getId() {
         return id;
+    }
+
+    public String getProductLine() {
+        return productLine;
+    }
+
+    public void setProductLine(String productLine) {
+        this.productLine = productLine;
     }
 
     public Date getUpdatedDate() {

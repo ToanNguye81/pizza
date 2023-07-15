@@ -59,11 +59,10 @@ public class ProductLineController {
             @Valid @RequestBody ProductLine pProductLine) {
         try {
             ProductLine vProductLine = new ProductLine();
-
             vProductLine.setDescription(pProductLine.getDescription());
+            vProductLine.setProductLine(pProductLine.getProductLine());
             vProductLine.setProducts(pProductLine.getProducts());
             vProductLine.setCreatedDate(new Date());
-
             ProductLine vProductLineSave = gProductLineRepository.save(vProductLine);
             return new ResponseEntity<>(vProductLineSave, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -100,7 +99,7 @@ public class ProductLineController {
         if (vProductLineData.isPresent()) {
             try {
                 ProductLine vProductLine = vProductLineData.get();
-
+                vProductLine.setProductLine(pProductLine.getProductLine());
                 vProductLine.setDescription(pProductLine.getDescription());
                 vProductLine.setProducts(pProductLine.getProducts());
                 vProductLine.setUpdatedDate(new Date());
