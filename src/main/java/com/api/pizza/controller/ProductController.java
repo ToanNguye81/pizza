@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Product;
-import com.api.pizza.entity.Product;
 import com.api.pizza.entity.ProductLine;
 import com.api.pizza.repository.IProductLineRepository;
 import com.api.pizza.repository.IProductRepository;
