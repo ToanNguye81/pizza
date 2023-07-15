@@ -89,6 +89,7 @@ public class OrderDetailController {
             try {
                 OrderDetail vOrderDetail = new OrderDetail();
                 vOrderDetail.setOrder(vOrderData.get());
+                vOrderDetail.setProduct(pOrderDetail.getProduct());
                 vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
                 vOrderDetail.setPriceEach(pOrderDetail.getPriceEach());
                 vOrderDetail.setCreatedDate(new Date());
@@ -120,6 +121,7 @@ public class OrderDetailController {
 
                     OrderDetail vOrderDetail = vOrderDetailData.get();
                     vOrderDetail.setOrder(vOrderData.get());
+                    vOrderDetail.setProduct(pOrderDetail.getProduct());
                     vOrderDetail.setQuantityOrder(pOrderDetail.getQuantityOrder());
                     vOrderDetail.setPriceEach(pOrderDetail.getPriceEach());
                     vOrderDetail.setUpdatedDate(new Date());
