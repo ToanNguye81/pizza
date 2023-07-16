@@ -48,7 +48,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "productLines_id", nullable = false)
-    @JsonIgnore
+    // @JsonIgnore
     private ProductLine productLine;
 
     @Temporal(TemporalType.TIMESTAMP)

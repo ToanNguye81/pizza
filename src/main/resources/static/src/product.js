@@ -1,8 +1,7 @@
-let gProductLineId = 0;
-let gProductId = 0;
+let gProductLineId = "";
+let gProductId = "";
 // productLine
 $.get(`/product-lines`, loadProductLineToSelect);
-$.get(`/products`, loadProductToTable);
 let productLineSelectElement = $("#select-product-line");
 function loadProductLineToSelect(pProductLine) {
   pProductLine.forEach((productLine) => {
@@ -15,9 +14,7 @@ function loadProductLineToSelect(pProductLine) {
 productLineSelectElement.change(onGetProductLineChange);
 function onGetProductLineChange(event) {
   gProductLineId = event.target.value;
-  if (gProductLineId == 0) {
-    $.get(`/products`, loadProductToTable);
-  } else {
+  if (gProductLineId !== "") {
     $.get(`/product-lines/${gProductLineId}/products`, loadProductToTable);
   }
 }
@@ -54,17 +51,25 @@ let product = {
     productCode: "",
     productName: "",
     productDescription: "",
+    buyPrice: "",
+    productScale: "",
+    productVendor: "",
+    quantityInStock: "",
   },
   onNewProductClick() {
-    gProductId = 0;
+    gProductId = "";
     this.newProduct = {
-      productCode: $("#inp-check-number").val().trim(),
-      productName: $("#inp-product-date").val().trim(),
-      productDescription: $("#inp-productDescription").val().trim(),
+      productCode: $("#inp-product-code").val().trim(),
+      productName: $("#inp-product-name").val().trim(),
+      productDescription: $("#inp-product-description").val().trim(),
+      buyPrice: $("#inp-buy-price").val().trim(),
+      productScale: $("#inp-product-scale").val().trim(),
+      productVendor: $("#inp-product-vendor").val().trim(),
+      quantityInStock: $("#inp-quantity-in-stock").val().trim(),
     };
     console.log(this.newProduct.productName);
     if (validateProduct(this.newProduct)) {
-      if (gProductLineId == 0) {
+      if (gProductLineId == "") {
         alert(`Please select productLine to create a new product`);
       } else {
         $.ajax({
@@ -80,6 +85,7 @@ let product = {
             );
             resetProductInput();
           },
+          error: (err) => alert(err.responseText),
         });
       }
     }
@@ -92,16 +98,20 @@ let product = {
   },
   onUpdateProductClick() {
     this.newProduct = {
-      productCode: $("#inp-check-number").val().trim(),
-      productName: $("#inp-product-date").val().trim(),
-      productDescription: $("#inp-productDescription").val().trim(),
+      productCode: $("#inp-product-code").val().trim(),
+      productName: $("#inp-product-name").val().trim(),
+      productDescription: $("#inp-product-description").val().trim(),
+      buyPrice: $("#inp-buy-price").val().trim(),
+      productScale: $("#inp-product-scale").val().trim(),
+      productVendor: $("#inp-product-vendor").val().trim(),
+      quantityInStock: $("#inp-quantity-in-stock").val().trim(),
     };
     if (validateProduct(this.newProduct)) {
-      if (gProductLineId == 0) {
+      if (gProductLineId == "") {
         alert(`Please select productLine to update a new product`);
       } else {
         $.ajax({
-          url: `/products/${gProductId}`,
+          url: `product-lines/${gProductLineId}/products/${gProductId}`,
           method: "PUT",
           data: JSON.stringify(this.newProduct),
           contentType: "application/json",
@@ -113,6 +123,7 @@ let product = {
             );
             resetProductInput();
           },
+          error: (err) => alert(err.responseText),
         });
       }
     }
@@ -125,20 +136,20 @@ let product = {
   },
   onDeleteAllProductClick() {
     $("#modal-delete-product").modal("show");
-    gProductId = 0;
+    gProductId = "";
   },
   onProductConfirmDeleteClick() {
-    if (gProductId == 0) {
+    if (gProductId == "") {
       $.ajax({
         url: `/products`,
         method: "DELETE",
         success: () => {
           alert("All Product was successfully deleted");
           // $.get(`/products`, loadProductToTable);
-          gProductLineId == 0
+          gProductLineId == ""
             ? $.get(`/products`, loadProductToTable)
             : $.get(
-                `productLines/${gProductLineId}/products`,
+                `product-lines/${gProductLineId}/products`,
                 loadProductToTable
               );
           $("#modal-delete-product").modal("hide");
@@ -151,10 +162,10 @@ let product = {
         method: "DELETE",
         success: () => {
           alert(`Product with id ${gProductId} was successfully deleted`);
-          gProductLineId == 0
+          gProductLineId == ""
             ? $.get(`/products`, loadProductToTable)
             : $.get(
-                `productLines/${gProductLineId}/products`,
+                `product-lines/${gProductLineId}/products`,
                 loadProductToTable
               );
 
@@ -182,15 +193,19 @@ function validateProduct(pProduct) {
   try {
     if (pProduct.productCode == "") {
       vResult = false;
-      throw `100. Check number can't empty`;
+      throw `100. productCode can't empty`;
     }
     if (pProduct.productName == "") {
       vResult = false;
-      throw `200. Product date can't empty`;
+      throw `200. productName can't empty`;
     }
-    if (pProduct.productDescription == "") {
+    if (pProduct.buyPrice == "") {
       vResult = false;
-      throw `300. Amount can't empty`;
+      throw `300. buyPrice can't empty`;
+    }
+    if (pProduct.quantityInStock == "") {
+      vResult = false;
+      throw `400. quantityInStock can't empty`;
     }
   } catch (e) {
     alert(e);
@@ -199,13 +214,149 @@ function validateProduct(pProduct) {
 }
 
 function loadProductToInput(pProduct) {
-  $("#inp-check-number").val(pProduct.productCode);
-  $("#inp-product-date").val(pProduct.productName);
-  $("#inp-productDescription").val(pProduct.productDescription);
+  $("#inp-product-code").val(pProduct.productCode);
+  $("#inp-product-name").val(pProduct.productName);
+  $("#inp-product-description").val(pProduct.productDescription);
+  $("#inp-buy-price").val(pProduct.buyPrice);
+  $("#inp-product-scale").val(pProduct.productScale);
+  $("#inp-product-vendor").val(pProduct.productVendor);
+  $("#inp-quantity-in-stock").val(pProduct.quantityInStock);
 }
 
 function resetProductInput() {
   $("#inp-check-number").val("");
   $("#inp-product-date").val("");
   $("#inp-productDescription").val("");
+}
+
+// productLine
+let productLine = {
+  newProductLine: {
+    description: "",
+    productLine: "",
+  },
+  onNewProductLineClick() {
+    $("#modal-create-product-line").modal("show");
+    gProductLineId = "";
+  },
+  onUpdateProductLineClick() {
+    if (gProductLineId != "") {
+      $("#modal-create-product-line").modal("show");
+      $.get(`/product-lines/${gProductLineId}`, loadProductLineToInput);
+    } else {
+      alert("Please select productLine to update");
+    }
+  },
+  onSaveProductLineClick() {
+    this.newProductLine = {
+      description: $("#inp-product-line-description").val(),
+      productLine: $("#inp-product-line").val(),
+    };
+    if (gProductLineId == "") {
+      if (validateProductLine(this.newProductLine)) {
+        $.ajax({
+          url: "/product-lines",
+          method: "POST",
+          data: JSON.stringify(this.newProductLine),
+          contentType: "application/json",
+          success: (productLine) => {
+            alert(`Đã tạo thành công Product line`);
+            $("#modal-create-product-line").modal("hide");
+            resetProductLineInput();
+            location.reload();
+          },
+          error: (err) => alert(err.responseText),
+        });
+      }
+    } else {
+      if (validateProductLine(this.newProductLine)) {
+        $.ajax({
+          url: `/product-lines/${gProductLineId}`,
+          method: "PUT",
+          data: JSON.stringify(this.newProductLine),
+          contentType: "application/json",
+          success: (productLine) => {
+            alert(
+              `Đã cập nhât thành công productLine với id: ${gProductLineId}`
+            );
+            $("#modal-create-product-line").modal("hide");
+            resetProductLineInput();
+            location.reload();
+          },
+          error: (err) => alert(err.responseText),
+        });
+      }
+    }
+  },
+  onDeleteProductLineClick() {
+    if (gProductLineId != "") {
+      $("#modal-delete-product-line").modal("show");
+    } else {
+      alert("Please select productLine to delete");
+    }
+  },
+  onDeleteAllProductLineClick() {
+    $("#modal-delete-product-line").modal("show");
+    gProductLineId == "";
+  },
+  onConfirmDeleteProductLineClick() {
+    if (gProductLineId == "") {
+      $.ajax({
+        url: `/product-lines/`,
+        method: "DELETE",
+        success: () => {
+          alert(`Successfully Delete All ProductLine`);
+          location.reload();
+        },
+        error: () => alert(`Need delete All region then delete Product line`),
+      });
+    } else {
+      $.ajax({
+        url: `/product-lines/${gProductLineId}`,
+        method: "DELETE",
+        success: () => {
+          alert(`Successfully Delete Product Line with id: ${gProductLineId}`);
+          location.reload();
+        },
+        error: () => alert(`Need delete All region then delete Product line`),
+      });
+    }
+  },
+};
+
+$("#create-product-line").click(productLine.onNewProductLineClick);
+$("#update-product-line").click(productLine.onUpdateProductLineClick);
+$("#btn-save-product-line").click(productLine.onSaveProductLineClick);
+$("#delete-product-line").click(productLine.onDeleteProductLineClick);
+$("#delete-all-product-line").click(productLine.onDeleteAllProductLineClick);
+$("#btn-confirm-delete-product-line").click(
+  productLine.onConfirmDeleteProductLineClick
+);
+
+function validateProductLine(pProductLine) {
+  let vResult = true;
+  try {
+    if (pProductLine.description == "") {
+      vResult = false;
+      throw "Không được để trống productLine code";
+    }
+
+    if (pProductLine.productLine == "") {
+      vResult = false;
+      throw "Không được để trống productLine name";
+    }
+  } catch (e) {
+    alert(e);
+  }
+  return vResult;
+}
+
+function loadProductLineToInput(pProductLine) {
+  $("#inp-product-line").val(pProductLine.productLine);
+  $("#inp-product-line-description").val(pProductLine.description);
+}
+
+function resetProductLineInput() {
+  $("#inp-product-line").val("");
+  $("#inp-product-line-description").val("");
 }

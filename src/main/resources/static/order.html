@@ -283,16 +283,6 @@
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="">Choose order</label>
-            </div>
-            <div class="col-sm-9">
-              <select name="" id="select-order" class="form-control">
-                <option value="">Choose order</option>
-              </select>
-            </div>
-          </div>
-          <div class="row form-group">
-            <div class="col-sm-3">
               <label for="product">Product</label>
             </div>
             <div class="col-sm-9">
@@ -303,10 +293,10 @@
           </div>
           <div class="row form-group">
             <div class="col-sm-3">
-              <label for="quantity-order">Quantity Order</label>
+              <label for="quantity">Quantity</label>
             </div>
             <div class="col-sm-9">
-              <input type="number" id="inp-quantity-order" name="discount" placeholder="Quantity order"
+              <input type="number" id="inp-quantity" name="discount" placeholder="Quantity"
                 class="form-control" />
             </div>
           </div>
@@ -318,10 +308,18 @@
               <input type="number" id="inp-price-each" placeholder="Price each" class="form-control" />
             </div>
           </div>
+          <div class="row form-group">
+            <div class="col-sm-3">
+              <label for="comments">Comments</label>
+            </div>
+            <div class="col-sm-9">
+              <input type="text" id="inp-comments" placeholder="Comments" class="form-control" />
+            </div>
+          </div>
           <div class="row mb-3 pull-right">
             <div class="col-sm-12 d-flex justify-content-around">
               <button class="btn btn-primary" id="btn-create-order">
-                New order
+                Create order
               </button>
               <button id="btn-update-order" class="btn btn-info">
                 Update order
@@ -331,17 +329,6 @@
               </button>
               <button class="btn btn-danger" id="btn-delete-all-order">
                 Delete ALL order
-              </button>
-            </div>
-          </div>
-          <div class="row pull-right">
-            <div class="col-sm-12 d-flex justify-content-around">
-              <button class="btn btn-primary" id="create-order">
-                Create Order Detail
-              </button>
-              <button id="update-order" class="btn btn-info">Update Order Detail</button>
-              <button class="btn btn-danger" id="delete-all-order">
-                Delete ALL Order Detail
               </button>
             </div>
           </div>

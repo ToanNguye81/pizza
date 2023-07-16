@@ -18,12 +18,14 @@ function loadCustomerToSelect(pCustomer) {
     }).appendTo(customerSelectElement);
   });
 }
-//load customer to select
+
+//load product to select
 function loadProductToSelect(pProduct) {
   pProduct.forEach((product) => {
     $("<option>", {
       text: product.productName,
       value: product.id,
+      "data-price": product.buyPrice,
     }).appendTo(productSelectElement);
   });
 }
@@ -39,6 +41,7 @@ function onGetCustomerChange(event) {
 }
 function onGetProductChange(event) {
   gProductId = event.target.value;
+  $("#inp-price-each").val($("#select-product option:selected").data("price"));
 }
 
 $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
@@ -59,32 +62,40 @@ function loadOrderToSelect(pOrder) {
 orderSelectElement.change(onGetOrderChange);
 function onGetOrderChange(event) {
   gOrderId = event.target.value;
-  if (gOrderId == 0) {
-    $.get(`/order-details`, loadOrderDetailToTable);
-  } else {
+  if (gOrderId !== "") {
     $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
   }
 }
 
 let order = {
   newOrder: {
-    status: "",
-    comments: "",
-    requiredDate: "",
-    orderDate: "",
-    shippedDate: "",
+    customerId: "",
+    productId: "",
+    quantityOrder: "",
+    customerId: "",
   },
   onCreateNewOrderClick() {
-    console.log(this.newOrder);
-    if (gCustomerId != "") {
-      gOrderId = 0;
-      $("#modal-create-order").modal("show");
-    } else {
-      alert("Please select a customer to create new order");
+    this.newOrder = {
+      customerId: "",
+      productId: "",
+      quantityOrder: "",
+    };
+    if (validateOrder(this.newOrder)) {
+      $.ajax({
+        url: `/orders`,
+        method: "POST",
+        data: JSON.stringify(this.newOrder),
+        contentType: "application/json",
+        success: () => {
+          alert(`Order created successfully`);
+          $.get(`/orders`, loadOrderToTable);
+          resetOrderInput();
+        },
+      });
     }
   },
   onUpdateOrderClick() {
-    if (gOrderId != 0) {
+    if (gOrderId !== "") {
       $("#modal-create-order").modal("show");
       $.get(`/orders/${gOrderId}`, loadOrderToInput);
     } else {
@@ -99,7 +110,7 @@ let order = {
       orderDate: $("#inp-order-date").val().trim(),
       shippedDate: $("#inp-shipped-date").val().trim(),
     };
-    if (gOrderId == 0) {
+    if (gOrderId !== "") {
       if (validateOrder(this.newOrder)) {
         $.ajax({
           url: `/customers/${gCustomerId}/orders`,
@@ -257,7 +268,7 @@ let orderDetail = {
       paid: $("#inp-Paid").val().trim(),
     };
     if (validateOrderDetail(this.newOrderDetail)) {
-      if (gOrderId == 0) {
+      if (gOrderId !== "") {
         alert(`Please select order to create a new order`);
       } else {
         $.ajax({
@@ -290,7 +301,7 @@ let orderDetail = {
       paid: $("#inp-Paid").val().trim(),
     };
     if (validateOrderDetail(this.newOrderDetail)) {
-      if (gOrderId == 0) {
+      if (gOrderId !== "") {
         alert(`Please select order to update a new order`);
       } else {
         $.ajax({
@@ -318,14 +329,14 @@ let orderDetail = {
     gOrderDetailId = 0;
   },
   onOrderDetailConfirmDeleteClick() {
-    if (gOrderDetailId == 0) {
+    if (gOrderDetailId !== "") {
       $.ajax({
         url: `/order-details`,
         method: "delete",
         success: () => {
           alert("All OrderDetail was successfully deleted");
           // $.get(`/order-details`, loadOrderDetailToTable);
-          gOrderId == 0
+          gOrderId !== ""
             ? $.get(`/order-details`, loadOrderDetailToTable)
             : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
           $("#modal-delete-order").modal("hide");
@@ -340,7 +351,7 @@ let orderDetail = {
           alert(
             `OrderDetail with id ${gOrderDetailId} was successfully deleted`
           );
-          gOrderId == 0
+          gOrderId !== ""
             ? $.get(`/order-details`, loadOrderDetailToTable)
             : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
 
