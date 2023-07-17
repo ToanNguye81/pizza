@@ -1,9 +1,12 @@
 package com.api.pizza.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-// import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -26,8 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Customer;
 import com.api.pizza.entity.Order;
+import com.api.pizza.entity.OrderDetail;
+import com.api.pizza.entity.Product;
 import com.api.pizza.repository.ICustomerRepository;
+import com.api.pizza.repository.IOrderDetailRepository;
 import com.api.pizza.repository.IOrderRepository;
+import com.api.pizza.repository.IProductRepository;
 
 @RestController
 @CrossOrigin
@@ -37,12 +44,16 @@ public class OrderController {
     IOrderRepository gOrderRepository;
     @Autowired
     ICustomerRepository gCustomerRepository;
+    @Autowired
+    IProductRepository gProductRepository;
+    @Autowired
+    IOrderDetailRepository gOrderDetailRepository;
 
     // get all Order
     @GetMapping("/orders")
     public ResponseEntity<List<Order>> getAllOrder(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size) {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
@@ -64,7 +75,6 @@ public class OrderController {
         if (vOrderData.isPresent()) {
             try {
                 Order vOrder = vOrderData.get();
-                System.out.println(vOrder);
                 return new ResponseEntity<>(vOrder, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,34 +91,34 @@ public class OrderController {
         return gOrderRepository.findByCustomerId(customerId);
     }
 
-    // // create new order
-    // @PostMapping("/customers/{customerId}/orders")
-    // public ResponseEntity<Object> createNewOrder(
-    // @Valid @RequestBody Order pOrder,
-    // @PathVariable Integer customerId) {
-    // Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
-    // if (vCustomerData.isPresent()) {
-    // try {
-    // Order vOrder = new Order();
-    // vOrder.setComments(pOrder.getComments());
-    // vOrder.setOrderDate(new Date());
-    // vOrder.setRequiredDate(pOrder.getRequiredDate());
-    // vOrder.setShippedDate(pOrder.getShippedDate());
-    // vOrder.setStatus(pOrder.getStatus());
-    // vOrder.setCustomer(vCustomerData.get());
-    // // save order & return
-    // Order vSavedOrder = gOrderRepository.save(vOrder);
-    // return new ResponseEntity<>(vSavedOrder, HttpStatus.CREATED);
-    // } catch (Exception e) {
-    // return ResponseEntity.unprocessableEntity()
-    // .body("Failed to Create specified Order: " +
-    // e.getCause().getCause().getMessage());
-    // }
-    // } else {
-    // Customer vCustomerNull = new Customer();
-    // return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
-    // }
-    // }
+    // create new order
+    @PostMapping("/customers/{customerId}/orders")
+    public ResponseEntity<Object> createNewOrderWithCustomerId(
+            @Valid @RequestBody Order pOrder,
+            @PathVariable Integer customerId) {
+        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
+        if (vCustomerData.isPresent()) {
+            try {
+                Order vOrder = new Order();
+                vOrder.setComments(pOrder.getComments());
+                vOrder.setOrderDate(new Date());
+                vOrder.setRequiredDate(pOrder.getRequiredDate());
+                vOrder.setShippedDate(pOrder.getShippedDate());
+                vOrder.setStatus(pOrder.getStatus());
+                vOrder.setCustomer(vCustomerData.get());
+                // save order & return
+                Order vSavedOrder = gOrderRepository.save(vOrder);
+                return new ResponseEntity<>(vSavedOrder, HttpStatus.CREATED);
+            } catch (Exception e) {
+                return ResponseEntity.unprocessableEntity()
+                        .body("Failed to Create specified Order: " +
+                                e.getCause().getCause().getMessage());
+            }
+        } else {
+            Customer vCustomerNull = new Customer();
+            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
+        }
+    }
 
     // Update order by id
     @PutMapping("/customers/{customerId}/orders/{orderId}")
@@ -162,33 +172,81 @@ public class OrderController {
         }
     }
 
-    // create new order
-    @PostMapping("/orders")
-    public ResponseEntity<Object> createNewOrder(
-            @Valid @RequestBody Order pOrder) {
+    @PostMapping(value = "/orders")
+    public ResponseEntity<Object> createNewOrder(@Valid @RequestBody Map<String, Object> req) {
+        // TODO: process POST request
+        Map<String, Object> newOrder = (Map<String, Object>) req.get("newOrder");
+        Integer customerId = (Integer) newOrder.get("customerId");
+        String comments = (String) newOrder.get("comments");
+        List<Map<String, Object>> cart = (List<Map<String, Object>>) newOrder.get("cart");
 
-        Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
-        if (vCustomerData.isPresent()) {
-            try {
-                Order vOrder = new Order();
-                vOrder.setComments(pOrder.getComments());
-                vOrder.setOrderDate(new Date());
-                vOrder.setRequiredDate(pOrder.getRequiredDate());
-                vOrder.setShippedDate(pOrder.getShippedDate());
-                vOrder.setStatus(pOrder.getStatus());
-                vOrder.setCustomer(vCustomerData.get());
-                // save order & return
-                Order vSavedOrder = gOrderRepository.save(vOrder);
-                return new ResponseEntity<>(vSavedOrder, HttpStatus.CREATED);
-            } catch (Exception e) {
-                return ResponseEntity.unprocessableEntity()
-                        .body("Failed to Create specified Order: " + e.getCause().getCause().getMessage());
+        Optional<Customer> existingCustomer = gCustomerRepository.findById(customerId);
+        if (existingCustomer.isPresent()) {
+            // check all product is existing
+            Boolean allProductExisting = true;
+            for (Map<String, Object> product : cart) {
+                Integer productId = (Integer) product.get("productId");
+                if (isExistingProduct(productId) == false) {
+                    allProductExisting = false;
+                }
             }
-        } else {
-            Customer vCustomerNull = new Customer();
-            return new ResponseEntity<>(vCustomerNull, HttpStatus.NOT_FOUND);
-        }
+            if (allProductExisting) {
+                // create order
+                Order createdOrder = createOrder(comments, existingCustomer.get());
+                // Create Order Detail List
+                createOrderDetailList(cart, createdOrder);
 
+                return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>("At least productId is invalid", HttpStatus.BAD_REQUEST);
+            }
+
+        } else {
+            return new ResponseEntity<>("Not found customer!!", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Check product is existing
+    public boolean isExistingProduct(Integer productId) {
+        return gProductRepository.existsById(productId);
+    }
+
+    // Create Order
+    public Order createOrder(String comment, Customer customer) {
+        Order newOrder = new Order();
+        newOrder.setOrderDate(new Date());
+        newOrder.setComments(comment);
+        newOrder.setStatus("Created");
+        newOrder.setCustomer(customer);
+        Order createdOrder = gOrderRepository.save(newOrder);
+        return createdOrder;
+    }
+
+    // Create Order Detail List
+    public List<OrderDetail> createOrderDetailList(List<Map<String, Object>> cart, Order order) {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        for (Map<String, Object> product : cart) {
+            Integer productId = (Integer) product.get("productId");
+            Integer quantityOrder = (Integer) product.get("quantity");
+            Product vProduct = gProductRepository.findById(productId).get();
+            OrderDetail createdOrderDetail = createOrderDetail(vProduct, quantityOrder,
+                    order);
+            orderDetailList.add(createdOrderDetail);
+        }
+        return orderDetailList;
+    }
+
+    // Create Order Detail
+    public OrderDetail createOrderDetail(Product product, Integer quantityOrder,
+            Order order) {
+        OrderDetail newOrderDetail = new OrderDetail();
+        newOrderDetail.setCreatedDate(new Date());
+        newOrderDetail.setProduct(product);
+        newOrderDetail.setOrder(order);
+        newOrderDetail.setPriceEach(product.getBuyPrice());
+        newOrderDetail.setQuantityOrder(quantityOrder);
+        OrderDetail createdOrderDetail = gOrderDetailRepository.save(newOrderDetail);
+        return createdOrderDetail;
     }
 
 }

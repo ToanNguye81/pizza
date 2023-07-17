@@ -1,6 +1,7 @@
 let gCustomerId = "";
 let gProductId = "";
 let gOrderId = "";
+let gCart = [];
 let gOrderDetailId = "";
 let customerSelectElement = $("#select-customer");
 let productSelectElement = $("#select-product");
@@ -26,6 +27,8 @@ function loadProductToSelect(pProduct) {
       text: product.productName,
       value: product.id,
       "data-price": product.buyPrice,
+      "data-name": product.productName,
+      "data-code": product.productCode,
     }).appendTo(productSelectElement);
   });
 }
@@ -70,15 +73,15 @@ function onGetOrderChange(event) {
 let order = {
   newOrder: {
     customerId: "",
-    productId: "",
-    quantityOrder: "",
-    customerId: "",
+    comments: "",
+    status: "",
+    cart: [],
   },
   onCreateNewOrderClick() {
     this.newOrder = {
-      customerId: "",
-      productId: "",
-      quantityOrder: "",
+      customerId: gCustomerId,
+      comments: $("#inp-comments").val().trim(),
+      cart: gCart,
     };
     if (validateOrder(this.newOrder)) {
       $.ajax({
@@ -175,7 +178,7 @@ let order = {
     }
   },
 };
-
+$("#btn-add-to-cart").click(addToCart);
 $("#btn-create-order").click(order.onCreateNewOrderClick);
 $("#btn-update-order").click(order.onUpdateOrderClick);
 $("#btn-save-order").click(order.onSaveOrderClick);
@@ -241,6 +244,32 @@ let orderTable = $("#order-table").DataTable({
     },
   ],
 });
+
+//Cart
+let cartTable = $("#cart-table").DataTable({
+  columns: [
+    { data: "product.id" },
+    { data: "product.productName" },
+    { data: "product.productCode" },
+    { data: "product.buyPrice" },
+    { data: "quantity" },
+    { data: "Action" },
+  ],
+  columnDefs: [
+    {
+      targets: -1,
+      defaultContent: `<i class="fas fa-plus text-primary"></i>
+      | <i class="fas fa-minus text-danger"></i>
+      | <i class="fas fa-trash text-danger"></i>`,
+    },
+  ],
+});
+
+function loadCartToTable(products) {
+  cartTable.clear();
+  cartTable.rows.add(products);
+  cartTable.draw();
+}
 
 function loadOrderDetailToTable(pOrderDetail) {
   orderTable.clear();
@@ -415,4 +444,47 @@ function resetOrderDetailInput() {
   $("#inp-voucher").val("");
   $("#inp-Price").val("");
   $("#inp-Paid").val("");
+}
+
+$("#order-table").on("click", ".fa-plus", onPlusClick);
+$("#order-table").on("click", ".fa-minus", onSubtractClick);
+//Add to cart
+function addToCart() {
+  if (gProductId !== "") {
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
+    let existingItemIndex = gCart.findIndex(
+      (item) => item.product.id === gProductId
+    );
+
+    if (existingItemIndex !== -1) {
+      // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
+      gCart[existingItemIndex].quantity += 1;
+    } else {
+      // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
+      let cartItem = {
+        product: {
+          id: gProductId,
+          productCode: $("#select-product option:selected").data("code"),
+          productName: $("#select-product option:selected").data("name"),
+          buyPrice: $("#select-product option:selected").data("price"),
+        },
+        quantity: 1,
+      };
+      gCart.push(cartItem);
+    }
+    loadCartToTable(gCart);
+  } else {
+    alert("Choose 1 product!");
+  }
+}
+
+function onPlusClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = cartTable.row(vSelectedRow).data();
+  gProductId = vSelectedData.id;
+  console.log(gProductId);
+}
+
+function onSubtractClick() {
+  console.log(event.target.value);
 }
