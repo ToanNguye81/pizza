@@ -1,14 +1,15 @@
 let gCustomerId = "";
-let gProductId = "";
+let gProductId = 0;
 let gOrderId = "";
 let gCart = [];
 let gOrderDetailId = "";
 let customerSelectElement = $("#select-customer");
 let productSelectElement = $("#select-product");
 let orderSelectElement = $("#select-order");
-// order
+
 $.get(`/customers/${gCustomerId}`, loadCustomerToSelect);
 $.get(`/products/`, loadProductToSelect);
+$.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
 
 //load customer to select
 function loadCustomerToSelect(pCustomer) {
@@ -22,6 +23,7 @@ function loadCustomerToSelect(pCustomer) {
 
 //load product to select
 function loadProductToSelect(pProduct) {
+  console.log(pProduct);
   pProduct.forEach((product) => {
     $("<option>", {
       text: product.productName,
@@ -36,19 +38,27 @@ function loadProductToSelect(pProduct) {
 customerSelectElement.change(onGetCustomerChange);
 // event onChange customer select
 productSelectElement.change(onGetProductChange);
+// event onChange order select
+orderSelectElement.change(onGetOrderChange);
+
 // on get customer change
 function onGetCustomerChange(event) {
   gCustomerId = event.target.value;
   $.get(`/customers/${gCustomerId}/orders`, loadOrderToSelect);
   $("#customer-of-order").val($("#select-customer option:selected").text());
 }
+// on get product change
 function onGetProductChange(event) {
   gProductId = event.target.value;
   $("#inp-price-each").val($("#select-product option:selected").data("price"));
 }
-
-$.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-
+// on get order change
+function onGetOrderChange(event) {
+  gOrderId = event.target.value;
+  if (gOrderId !== "") {
+    $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
+  }
+}
 //load order to select
 function loadOrderToSelect(pOrder) {
   orderSelectElement
@@ -62,14 +72,7 @@ function loadOrderToSelect(pOrder) {
   });
 }
 
-orderSelectElement.change(onGetOrderChange);
-function onGetOrderChange(event) {
-  gOrderId = event.target.value;
-  if (gOrderId !== "") {
-    $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-  }
-}
-
+// order
 let order = {
   newOrder: {
     customerId: "",
@@ -79,10 +82,11 @@ let order = {
   },
   onCreateNewOrderClick() {
     this.newOrder = {
-      customerId: gCustomerId,
+      customerId: parseInt(gCustomerId, 10),
       comments: $("#inp-comments").val().trim(),
       cart: gCart,
     };
+    console.log(this.newOrder);
     if (validateOrder(this.newOrder)) {
       $.ajax({
         url: `/orders`,
@@ -178,7 +182,7 @@ let order = {
     }
   },
 };
-$("#btn-add-to-cart").click(addToCart);
+
 $("#btn-create-order").click(order.onCreateNewOrderClick);
 $("#btn-update-order").click(order.onUpdateOrderClick);
 $("#btn-save-order").click(order.onSaveOrderClick);
@@ -187,7 +191,6 @@ $("#btn-delete-all-order").click(order.onDeleteAllOrderClick);
 $("#btn-confirm-delete-order").click(order.onConfirmDeleteOrderClick);
 
 function loadOrderToInput(pOrder) {
-  console.log(pOrder);
   $("#select-customer").val(pOrder.customer);
   $("#inp-order-date").val(pOrder.orderDate);
   $("#inp-required-date").val(pOrder.requiredDate);
@@ -224,8 +227,6 @@ function validateOrder(pOrder) {
   }
   return vResult;
 }
-
-// order
 let orderTable = $("#order-table").DataTable({
   columns: [
     { data: "orderCode" },
@@ -277,6 +278,14 @@ function loadOrderDetailToTable(pOrderDetail) {
   orderTable.draw();
 }
 
+$("#create-order").click(order.onNewOrderDetailClick);
+$("#update-order").click(order.onUpdateOrderDetailClick);
+$("#delete-all-order").click(order.onDeleteAllOrderDetailClick);
+$("#btn-confirm-delete-order").click(order.onOrderDetailConfirmDeleteClick);
+// $("#order-table").on("click", ".fa-edit", order.onEditOrderDetailClick);
+// $("#order-table").on("click", ".fa-trash", order.onDeleteOrderByIdClick);
+
+//order Detail
 let orderDetail = {
   newOrderDetail: {
     orderCode: "",
@@ -392,13 +401,6 @@ let orderDetail = {
   },
 };
 
-$("#create-order").click(order.onNewOrderDetailClick);
-$("#update-order").click(order.onUpdateOrderDetailClick);
-$("#delete-all-order").click(order.onDeleteAllOrderDetailClick);
-$("#btn-confirm-delete-order").click(order.onOrderDetailConfirmDeleteClick);
-// $("#order-table").on("click", ".fa-edit", order.onEditOrderDetailClick);
-// $("#order-table").on("click", ".fa-trash", order.onDeleteOrderByIdClick);
-
 function validateOrderDetail(pOrderDetail) {
   let vResult = true;
   try {
@@ -446,11 +448,53 @@ function resetOrderDetailInput() {
   $("#inp-Paid").val("");
 }
 
-$("#order-table").on("click", ".fa-plus", onPlusClick);
-$("#order-table").on("click", ".fa-minus", onSubtractClick);
 //Add to cart
+$("#cart-table").on("click", ".fa-plus", onPlusClick);
+$("#cart-table").on("click", ".fa-minus", onSubtractClick);
+$("#cart-table").on("click", ".fa-trash", onDeleteClick);
+$("#btn-add-to-cart").on("click", addToCart);
+
+function onPlusClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = cartTable.row(vSelectedRow).data();
+  let productId = vSelectedData.product.id;
+
+  let index = gCart.findIndex((item) => item.product.id === productId);
+  if (index !== -1) {
+    gCart[index].quantity++;
+  }
+  loadCartToTable(gCart);
+}
+
+function onSubtractClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = cartTable.row(vSelectedRow).data();
+  let productId = vSelectedData.product.id;
+
+  let index = gCart.findIndex((item) => item.product.id === productId);
+  if (index !== -1) {
+    if (gCart[index].quantity > 1) {
+      gCart[index].quantity--;
+    } else {
+      gCart.splice(index, 1);
+    }
+  }
+  loadCartToTable(gCart);
+}
+
+function onDeleteClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = cartTable.row(vSelectedRow).data();
+  let productId = vSelectedData.product.id;
+  let index = gCart.findIndex((item) => item.product.id === productId);
+  if (index !== -1) {
+    gCart.splice(index, 1);
+  }
+  loadCartToTable(gCart);
+}
+
 function addToCart() {
-  if (gProductId !== "") {
+  if (gProductId !== 0) {
     // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
     let existingItemIndex = gCart.findIndex(
       (item) => item.product.id === gProductId
@@ -462,6 +506,7 @@ function addToCart() {
     } else {
       // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
       let cartItem = {
+        productId: parseInt(gProductId, 10),
         product: {
           id: gProductId,
           productCode: $("#select-product option:selected").data("code"),
@@ -476,15 +521,4 @@ function addToCart() {
   } else {
     alert("Choose 1 product!");
   }
-}
-
-function onPlusClick() {
-  let vSelectedRow = $(this).parents("tr");
-  let vSelectedData = cartTable.row(vSelectedRow).data();
-  gProductId = vSelectedData.id;
-  console.log(gProductId);
-}
-
-function onSubtractClick() {
-  console.log(event.target.value);
 }

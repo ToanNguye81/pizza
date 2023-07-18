@@ -175,10 +175,10 @@ public class OrderController {
     @PostMapping(value = "/orders")
     public ResponseEntity<Object> createNewOrder(@Valid @RequestBody Map<String, Object> req) {
         // TODO: process POST request
-        Map<String, Object> newOrder = (Map<String, Object>) req.get("newOrder");
-        Integer customerId = (Integer) newOrder.get("customerId");
-        String comments = (String) newOrder.get("comments");
-        List<Map<String, Object>> cart = (List<Map<String, Object>>) newOrder.get("cart");
+        // Map<String, Object> newOrder = (Map<String, Object>) req.get("newOrder");
+        Integer customerId = (Integer) req.get("customerId");
+        String comments = (String) req.get("comments");
+        List<Map<String, Object>> cart = (List<Map<String, Object>>) req.get("cart");
 
         Optional<Customer> existingCustomer = gCustomerRepository.findById(customerId);
         if (existingCustomer.isPresent()) {
