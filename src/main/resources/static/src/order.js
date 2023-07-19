@@ -3,13 +3,12 @@ let gProductId = 0;
 let gOrderId = "";
 let gCart = [];
 let gOrderDetailId = "";
-let customerSelectElement = $("#select-customer");
-let productSelectElement = $("#select-product");
-let orderSelectElement = $("#select-order");
+let customerSelectEle = $("#select-customer");
+let productSelectEle = $("#select-product");
+let orderSelectEle = $("#select-order");
 
 $.get(`/customers/${gCustomerId}`, loadCustomerToSelect);
 $.get(`/products/`, loadProductToSelect);
-$.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
 
 //load customer to select
 function loadCustomerToSelect(pCustomer) {
@@ -17,13 +16,12 @@ function loadCustomerToSelect(pCustomer) {
     $("<option>", {
       text: customer.firstName + " " + customer.lastName,
       value: customer.id,
-    }).appendTo(customerSelectElement);
+    }).appendTo(customerSelectEle);
   });
 }
 
 //load product to select
 function loadProductToSelect(pProduct) {
-  console.log(pProduct);
   pProduct.forEach((product) => {
     $("<option>", {
       text: product.productName,
@@ -31,21 +29,23 @@ function loadProductToSelect(pProduct) {
       "data-price": product.buyPrice,
       "data-name": product.productName,
       "data-code": product.productCode,
-    }).appendTo(productSelectElement);
+    }).appendTo(productSelectEle);
   });
 }
 // event onChange customer select
-customerSelectElement.change(onGetCustomerChange);
+customerSelectEle.change(onGetCustomerChange);
+
 // event onChange customer select
-productSelectElement.change(onGetProductChange);
+productSelectEle.change(onGetProductChange);
+
 // event onChange order select
-orderSelectElement.change(onGetOrderChange);
+orderSelectEle.change(onGetOrderChange);
 
 // on get customer change
 function onGetCustomerChange(event) {
+  debugger;
   gCustomerId = event.target.value;
-  $.get(`/customers/${gCustomerId}/orders`, loadOrderToSelect);
-  $("#customer-of-order").val($("#select-customer option:selected").text());
+  $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
 }
 // on get product change
 function onGetProductChange(event) {
@@ -56,19 +56,19 @@ function onGetProductChange(event) {
 function onGetOrderChange(event) {
   gOrderId = event.target.value;
   if (gOrderId !== "") {
-    $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
+    // $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
   }
 }
 //load order to select
 function loadOrderToSelect(pOrder) {
-  orderSelectElement
+  orderSelectEle
     .empty()
     .append('<option selected="selected" value="">Choose order</option>');
   pOrder.forEach((order) => {
     $("<option>", {
       text: order.comments,
       value: order.id,
-    }).appendTo(orderSelectElement);
+    }).appendTo(orderSelectEle);
   });
 }
 
@@ -81,12 +81,12 @@ let order = {
     cart: [],
   },
   onCreateNewOrderClick() {
+    debugger;
     this.newOrder = {
       customerId: parseInt(gCustomerId, 10),
       comments: $("#inp-comments").val().trim(),
       cart: gCart,
     };
-    console.log(this.newOrder);
     if (validateOrder(this.newOrder)) {
       $.ajax({
         url: `/orders`,
@@ -95,8 +95,7 @@ let order = {
         contentType: "application/json",
         success: () => {
           alert(`Order created successfully`);
-          $.get(`/orders`, loadOrderToTable);
-          resetOrderInput();
+          $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
         },
       });
     }
@@ -201,26 +200,15 @@ function loadOrderToInput(pOrder) {
 
 function validateOrder(pOrder) {
   let vResult = true;
+  console.pOrder;
   try {
-    if (pOrder.orderDate == "") {
+    if (isNaN(pOrder.customerId)) {
       vResult = false;
-      throw `order date can't be empty`;
+      throw `Customer can't be empty`;
     }
-    if (pOrder.requiredDate == "") {
+    if (pOrder.cart.length == 0) {
       vResult = false;
-      throw ` required Date can't be empty`;
-    }
-    if (pOrder.shippedDate == "") {
-      vResult = false;
-      throw `shipped Date can't be empty`;
-    }
-    if (pOrder.status == "") {
-      vResult = false;
-      throw `Status can't be empty`;
-    }
-    if (pOrder.comments == "") {
-      vResult = false;
-      throw `Comments can't be empty`;
+      throw `Cart can't be empty`;
     }
   } catch (e) {
     alert(e);
@@ -229,12 +217,12 @@ function validateOrder(pOrder) {
 }
 let orderTable = $("#order-table").DataTable({
   columns: [
-    { data: "orderCode" },
-    { data: "pizzaSize" },
-    { data: "pizzaType" },
-    { data: "voucherCode" },
-    { data: "price" },
-    { data: "paid" },
+    { data: "id" },
+    { data: "orderDate" },
+    { data: "shippedDate" },
+    { data: "requiredDate" },
+    { data: "status" },
+    { data: "comments" },
     { data: "Action" },
   ],
   columnDefs: [
@@ -272,180 +260,11 @@ function loadCartToTable(products) {
   cartTable.draw();
 }
 
-function loadOrderDetailToTable(pOrderDetail) {
+function loadOrderToTable(pOrder) {
+  console.log(pOrder);
   orderTable.clear();
-  orderTable.rows.add(pOrderDetail);
+  orderTable.rows.add(pOrder);
   orderTable.draw();
-}
-
-$("#create-order").click(order.onNewOrderDetailClick);
-$("#update-order").click(order.onUpdateOrderDetailClick);
-$("#delete-all-order").click(order.onDeleteAllOrderDetailClick);
-$("#btn-confirm-delete-order").click(order.onOrderDetailConfirmDeleteClick);
-// $("#order-table").on("click", ".fa-edit", order.onEditOrderDetailClick);
-// $("#order-table").on("click", ".fa-trash", order.onDeleteOrderByIdClick);
-
-//order Detail
-let orderDetail = {
-  newOrderDetail: {
-    orderCode: "",
-    pizzaSize: "",
-    pizzaType: "",
-    voucherCode: "",
-    price: "",
-    paid: "",
-  },
-  onNewOrderDetailClick() {
-    gOrderDetailId = 0;
-    this.newOrderDetail = {
-      orderCode: $("#inp-order-Code").val().trim(),
-      pizzaSize: $("#inp-pizza-size").val().trim(),
-      pizzaType: $("#inp-pizza-type").val().trim(),
-      voucherCode: $("#inp-voucher").val().trim(),
-      price: $("#inp-Price").val().trim(),
-      paid: $("#inp-Paid").val().trim(),
-    };
-    if (validateOrderDetail(this.newOrderDetail)) {
-      if (gOrderId !== "") {
-        alert(`Please select order to create a new order`);
-      } else {
-        $.ajax({
-          url: `/orders/${gOrderId}/order-details`,
-          method: "POST",
-          data: JSON.stringify(this.newOrderDetail),
-          contentType: "application/json",
-          success: () => {
-            alert(`OrderDetail created successfully`);
-            $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-            resetOrderDetailInput();
-          },
-        });
-      }
-    }
-  },
-  onEditOrderDetailClick() {
-    vSelectedRow = $(this).parents("tr");
-    vSelectedData = orderTable.row(vSelectedRow).data();
-    gOrderDetailId = vSelectedData.id;
-    $.get(`/order-details/${gOrderDetailId}`, loadOrderDetailToInput);
-  },
-  onUpdateOrderDetailClick() {
-    this.newOrderDetail = {
-      orderCode: $("#inp-order-Code").val().trim(),
-      pizzaSize: $("#inp-pizza-size").val().trim(),
-      pizzaType: $("#inp-pizza-type").val().trim(),
-      voucherCode: $("#inp-voucher").val().trim(),
-      price: $("#inp-Price").val().trim(),
-      paid: $("#inp-Paid").val().trim(),
-    };
-    if (validateOrderDetail(this.newOrderDetail)) {
-      if (gOrderId !== "") {
-        alert(`Please select order to update a new order`);
-      } else {
-        $.ajax({
-          url: `/order-details/${gOrderDetailId}`,
-          method: "PUT",
-          data: JSON.stringify(this.newOrderDetail),
-          contentType: "application/json",
-          success: () => {
-            alert(`OrderDetail updated successfully`);
-            $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-            resetOrderDetailInput();
-          },
-        });
-      }
-    }
-  },
-  onDeleteOrderByIdClick() {
-    $("#modal-delete-order").modal("show");
-    vSelectedRow = $(this).parents("tr");
-    vSelectedData = orderTable.row(vSelectedRow).data();
-    gOrderDetailId = vSelectedData.id;
-  },
-  onDeleteAllOrderDetailClick() {
-    $("#modal-delete-order").modal("show");
-    gOrderDetailId = 0;
-  },
-  onOrderDetailConfirmDeleteClick() {
-    if (gOrderDetailId !== "") {
-      $.ajax({
-        url: `/order-details`,
-        method: "delete",
-        success: () => {
-          alert("All OrderDetail was successfully deleted");
-          // $.get(`/order-details`, loadOrderDetailToTable);
-          gOrderId !== ""
-            ? $.get(`/order-details`, loadOrderDetailToTable)
-            : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-          $("#modal-delete-order").modal("hide");
-        },
-        error: (err) => alert(err.responseText),
-      });
-    } else {
-      $.ajax({
-        url: `/order-details/${gOrderDetailId}`,
-        method: "delete",
-        success: () => {
-          alert(
-            `OrderDetail with id ${gOrderDetailId} was successfully deleted`
-          );
-          gOrderId !== ""
-            ? $.get(`/order-details`, loadOrderDetailToTable)
-            : $.get(`orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-
-          $("#modal-delete-order").modal("hide");
-        },
-        error: (err) => alert(err.responseText),
-      });
-    }
-  },
-};
-
-function validateOrderDetail(pOrderDetail) {
-  let vResult = true;
-  try {
-    if (pOrderDetail.orderCode == "") {
-      vResult = false;
-      throw `OrderDetail code can't empty`;
-    }
-    if (pOrderDetail.pizzaSize == "") {
-      vResult = false;
-      throw `Pizza Size can't empty`;
-    }
-    if (pOrderDetail.pizzaType == "") {
-      vResult = false;
-      throw `Pizza Type can't empty`;
-    }
-    if (pOrderDetail.price == "" || isNaN(pOrderDetail.price)) {
-      vResult = false;
-      throw `Price cant' be empty or must is number`;
-    }
-    if (pOrderDetail.paid == "" || isNaN(pOrderDetail.paid)) {
-      vResult = false;
-      throw `Paid cant' be empty or must is number`;
-    }
-  } catch (e) {
-    alert(e);
-  }
-  return vResult;
-}
-
-function loadOrderDetailToInput(pOrderDetail) {
-  $("#inp-order-Code").val(pOrderDetail.orderCode);
-  $("#inp-pizza-size").val(pOrderDetail.pizzaSize);
-  $("#inp-pizza-type").val(pOrderDetail.pizzaType);
-  $("#inp-voucher").val(pOrderDetail.voucherCode);
-  $("#inp-Price").val(pOrderDetail.price);
-  $("#inp-Paid").val(pOrderDetail.paid);
-}
-
-function resetOrderDetailInput() {
-  $("#inp-order-Code").val("");
-  $("#inp-pizza-size").val("");
-  $("#inp-pizza-type").val("");
-  $("#inp-voucher").val("");
-  $("#inp-Price").val("");
-  $("#inp-Paid").val("");
 }
 
 //Add to cart
