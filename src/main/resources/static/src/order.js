@@ -99,57 +99,10 @@ let order = {
       });
     }
   },
-  onUpdateOrderClick() {
-    console.log("order");
-    let vSelectedRow = $(this).parents("tr");
-    let vSelectedData = orderTable.row(vSelectedRow).data();
-    gOrderId = vSelectedData.id;
-    $.get(`/orders/${gOrderId}`, loadOrderToInput);
-    $("#modal-update-order").modal("show");
-  },
-
-  onDeleteOrderClick() {
-    if (gOrderId != 0) {
-      $("#modal-delete-order").modal("show");
-    } else {
-      alert("Please select a order to delete");
-    }
-  },
-  onDeleteAllOrderClick() {
-    gOrderId = 0;
-    $("#modal-delete-order").modal("show");
-  },
-  onConfirmDeleteOrderClick() {
-    if (gOrderId != 0) {
-      $.ajax({
-        url: `/orders/${gOrderId}`,
-        method: "delete",
-        success: () => {
-          alert("successfully delete order with id:" + gOrderId);
-          location.reload();
-        },
-        error: (err) => alert(err.responseText),
-      });
-    } else {
-      $.ajax({
-        url: `/orders`,
-        method: "delete",
-        success: () => {
-          alert("successfully delete all orders");
-          location.reload();
-        },
-        error: (err) => alert(err.responseText),
-      });
-    }
-  },
 };
 
-$("#btn-create-order").click(order.onCreateNewOrderClick);
-$("#btn-update-order").click(order.onUpdateOrderClick);
 $("#btn-save-order").click(onSaveOrderClick);
-$("#btn-delete-order").click(order.onDeleteOrderClick);
-$("#btn-delete-all-order").click(order.onDeleteAllOrderClick);
-$("#btn-confirm-delete-order").click(order.onConfirmDeleteOrderClick);
+$("#btn-confirm-delete-order").click(onConfirmDeleteOrderClick);
 
 function loadOrderToInput(pOrder) {
   $("#inp-order-date").val(pOrder.orderDate);
@@ -222,15 +175,14 @@ function loadCartToTable(products) {
 }
 
 function loadOrderToTable(pOrder) {
-  console.log(pOrder);
   orderTable.clear();
   orderTable.rows.add(pOrder);
   orderTable.draw();
 }
 
 //Add to cart
-$("#order-table").on("click", ".fa-edit", order.onUpdateOrderClick);
-$("#order-table").on("click", ".fa-trash", order.onDeleteOrderClick);
+$("#order-table").on("click", ".fa-edit", onUpdateOrderClick);
+$("#order-table").on("click", ".fa-trash", onDeleteOrderClick);
 
 //Add to cart
 $("#cart-table").on("click", ".fa-plus", onPlusClick);
@@ -323,6 +275,36 @@ function onSaveOrderClick() {
       alert("successfully update order with id: " + gOrderId);
       $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
       $("#modal-update-order").modal("hide");
+    },
+    error: (err) => alert(err.responseText),
+  });
+}
+
+//Delete order
+function onDeleteOrderClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = orderTable.row(vSelectedRow).data();
+  gOrderId = vSelectedData.id;
+  $.get(`/orders/${gOrderId}`, loadOrderToInput);
+  $("#modal-delete-order").modal("show");
+}
+
+function onUpdateOrderClick() {
+  let vSelectedRow = $(this).parents("tr");
+  let vSelectedData = orderTable.row(vSelectedRow).data();
+  gOrderId = vSelectedData.id;
+  $.get(`/orders/${gOrderId}`, loadOrderToInput);
+  $("#modal-update-order").modal("show");
+}
+
+function onConfirmDeleteOrderClick() {
+  $.ajax({
+    url: `/orders/${gOrderId}`,
+    method: "DELETE",
+    success: () => {
+      alert("successfully delete order with id:" + gOrderId);
+      $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
+      $("#modal-delete-order").modal("hide");
     },
     error: (err) => alert(err.responseText),
   });
