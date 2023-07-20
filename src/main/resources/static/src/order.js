@@ -55,9 +55,6 @@ function onGetProductChange(event) {
 // on get order change
 function onGetOrderChange(event) {
   gOrderId = event.target.value;
-  if (gOrderId !== "") {
-    // $.get(`/orders/${gOrderId}/order-details`, loadOrderDetailToTable);
-  }
 }
 //load order to select
 function loadOrderToSelect(pOrder) {
