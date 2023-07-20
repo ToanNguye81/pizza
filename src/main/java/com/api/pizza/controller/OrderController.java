@@ -131,13 +131,14 @@ public class OrderController {
             Optional<Customer> vCustomerData = gCustomerRepository.findById(customerId);
             if (vCustomerData.isPresent()) {
                 try {
+
                     Order vOrder = vOrderData.get();
                     vOrder.setComments(pOrder.getComments());
-                    vOrder.setRequiredDate(pOrder.getRequiredDate());
                     vOrder.setOrderDate(pOrder.getOrderDate());
                     vOrder.setShippedDate(pOrder.getShippedDate());
                     vOrder.setStatus(pOrder.getStatus());
                     vOrder.setUpdatedDate(new Date());
+                    vOrder.setRequiredDate(pOrder.getRequiredDate());
                     vOrder.setCustomer(vCustomerData.get());
                     Order vSavedOrder = gOrderRepository.save(vOrder);
                     return new ResponseEntity<>(vSavedOrder, HttpStatus.OK);

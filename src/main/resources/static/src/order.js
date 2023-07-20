@@ -43,8 +43,8 @@ orderSelectEle.change(onGetOrderChange);
 
 // on get customer change
 function onGetCustomerChange(event) {
-  debugger;
   gCustomerId = event.target.value;
+  $("#customer-of-order").val($("#select-customer option:selected").text());
   $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
 }
 // on get product change
@@ -81,7 +81,6 @@ let order = {
     cart: [],
   },
   onCreateNewOrderClick() {
-    debugger;
     this.newOrder = {
       customerId: parseInt(gCustomerId, 10),
       comments: $("#inp-comments").val().trim(),
@@ -101,51 +100,14 @@ let order = {
     }
   },
   onUpdateOrderClick() {
-    if (gOrderId !== "") {
-      $("#modal-create-order").modal("show");
-      $.get(`/orders/${gOrderId}`, loadOrderToInput);
-    } else {
-      alert("Please select a order to update");
-    }
+    console.log("order");
+    let vSelectedRow = $(this).parents("tr");
+    let vSelectedData = orderTable.row(vSelectedRow).data();
+    gOrderId = vSelectedData.id;
+    $.get(`/orders/${gOrderId}`, loadOrderToInput);
+    $("#modal-update-order").modal("show");
   },
-  onSaveOrderClick() {
-    this.newOrder = {
-      status: $("#inp-status").val().trim(),
-      comments: $("#inp-comments").val().trim(),
-      requiredDate: $("#inp-required-date").val().trim(),
-      orderDate: $("#inp-order-date").val().trim(),
-      shippedDate: $("#inp-shipped-date").val().trim(),
-    };
-    if (gOrderId !== "") {
-      if (validateOrder(this.newOrder)) {
-        $.ajax({
-          url: `/customers/${gCustomerId}/orders`,
-          method: "POST",
-          contentType: "application/json",
-          data: JSON.stringify(this.newOrder),
-          success: (data) => {
-            alert("successfully create new order");
-            location.reload();
-          },
-          error: (err) => alert(err.responseText),
-        });
-      }
-    } else {
-      if (validateOrder(this.newOrder)) {
-        $.ajax({
-          url: `/customers/${gCustomerId}/orders/${gOrderId}`,
-          method: "PUT",
-          contentType: "application/json",
-          data: JSON.stringify(this.newOrder),
-          success: () => {
-            alert("successfully update order with id: " + gOrderId);
-            location.reload();
-          },
-          error: (err) => alert(err.responseText),
-        });
-      }
-    }
-  },
+
   onDeleteOrderClick() {
     if (gOrderId != 0) {
       $("#modal-delete-order").modal("show");
@@ -184,18 +146,17 @@ let order = {
 
 $("#btn-create-order").click(order.onCreateNewOrderClick);
 $("#btn-update-order").click(order.onUpdateOrderClick);
-$("#btn-save-order").click(order.onSaveOrderClick);
+$("#btn-save-order").click(onSaveOrderClick);
 $("#btn-delete-order").click(order.onDeleteOrderClick);
 $("#btn-delete-all-order").click(order.onDeleteAllOrderClick);
 $("#btn-confirm-delete-order").click(order.onConfirmDeleteOrderClick);
 
 function loadOrderToInput(pOrder) {
-  $("#select-customer").val(pOrder.customer);
   $("#inp-order-date").val(pOrder.orderDate);
   $("#inp-required-date").val(pOrder.requiredDate);
   $("#inp-shipped-date").val(pOrder.shippedDate);
   $("#inp-status").val(pOrder.status);
-  $("#inp-comments").val(pOrder.comments);
+  $("#inp-update-comments").val(pOrder.comments);
 }
 
 function validateOrder(pOrder) {
@@ -268,6 +229,10 @@ function loadOrderToTable(pOrder) {
 }
 
 //Add to cart
+$("#order-table").on("click", ".fa-edit", order.onUpdateOrderClick);
+$("#order-table").on("click", ".fa-trash", order.onDeleteOrderClick);
+
+//Add to cart
 $("#cart-table").on("click", ".fa-plus", onPlusClick);
 $("#cart-table").on("click", ".fa-minus", onSubtractClick);
 $("#cart-table").on("click", ".fa-trash", onDeleteClick);
@@ -311,19 +276,16 @@ function onDeleteClick() {
   }
   loadCartToTable(gCart);
 }
-
+// Add product
 function addToCart() {
   if (gProductId !== 0) {
-    // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
     let existingItemIndex = gCart.findIndex(
       (item) => item.product.id === gProductId
     );
 
     if (existingItemIndex !== -1) {
-      // Nếu sản phẩm đã tồn tại trong giỏ hàng, tăng số lượng
       gCart[existingItemIndex].quantity += 1;
     } else {
-      // Nếu sản phẩm chưa tồn tại trong giỏ hàng, thêm mới vào
       let cartItem = {
         productId: parseInt(gProductId, 10),
         product: {
@@ -340,4 +302,28 @@ function addToCart() {
   } else {
     alert("Choose 1 product!");
   }
+}
+
+//update order
+function onSaveOrderClick() {
+  newOrder = {
+    status: $("#inp-status").val().trim(),
+    orderDate: $("#inp-order-date").val().trim(),
+    comments: $("#inp-update-comments").val().trim(),
+    requiredDate: $("#inp-required-date").val().trim(),
+    shippedDate: $("#inp-shipped-date").val().trim(),
+  };
+
+  $.ajax({
+    url: `/customers/${gCustomerId}/orders/${gOrderId}`,
+    method: "PUT",
+    contentType: "application/json",
+    data: JSON.stringify(newOrder),
+    success: () => {
+      alert("successfully update order with id: " + gOrderId);
+      $.get(`/customers/${gCustomerId}/orders`, loadOrderToTable);
+      $("#modal-update-order").modal("hide");
+    },
+    error: (err) => alert(err.responseText),
+  });
 }

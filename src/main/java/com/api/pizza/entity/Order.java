@@ -35,16 +35,16 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
-    @Column(name = "required_date", nullable = true, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
-    private Date requiredDate;
-
     @Column(name = "order_date", nullable = true, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date orderDate;
+
+    @Column(name = "required_date", nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
+    private Date requiredDate;
 
     @Column(name = "shipped_date", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
