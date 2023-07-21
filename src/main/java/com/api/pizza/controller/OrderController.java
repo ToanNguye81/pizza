@@ -156,7 +156,7 @@ public class OrderController {
 
     // Delete order by id
     @DeleteMapping("/orders/{orderId}")
-    private ResponseEntity<Object> deleteOrderById(@PathVariable Integer orderId) {
+    public ResponseEntity<Object> deleteOrderById(@PathVariable Integer orderId) {
         Optional<Order> vOrderData = gOrderRepository.findById(orderId);
         if (vOrderData.isPresent()) {
             try {

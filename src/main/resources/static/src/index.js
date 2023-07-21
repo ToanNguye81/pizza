@@ -180,8 +180,6 @@ function loadOrderToTable(pOrder) {
 //Add to cart
 $("#order-table").on("click", ".fa-edit", onUpdateOrderClick);
 $("#order-table").on("click", ".fa-trash", onDeleteOrderClick);
-
-//Add to cart
 $("#cart-table").on("click", ".fa-plus", onPlusClick);
 $("#cart-table").on("click", ".fa-minus", onSubtractClick);
 $("#cart-table").on("click", ".fa-trash", onDeleteClick);
