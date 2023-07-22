@@ -8,7 +8,7 @@ let productSelectEle = $("#select-product");
 let orderSelectEle = $("#select-order");
 
 $.get(`/customers/${gCustomerId}`, loadCustomerToSelect);
-$.get(`/products/`, loadProductToSelect);
+$.get(`/products`, loadProductToSelect);
 
 //load customer to select
 function loadCustomerToSelect(pCustomer) {
@@ -83,6 +83,7 @@ let order = {
       comments: $("#inp-comments").val().trim(),
       cart: gCart,
     };
+    console.log(this.newOrder);
     if (validateOrder(this.newOrder)) {
       $.ajax({
         url: `/orders`,
@@ -99,6 +100,7 @@ let order = {
 };
 
 $("#btn-save-order").click(onSaveOrderClick);
+$("#btn-create-order").click(order.onCreateNewOrderClick);
 $("#btn-confirm-delete-order").click(onConfirmDeleteOrderClick);
 
 function loadOrderToInput(pOrder) {

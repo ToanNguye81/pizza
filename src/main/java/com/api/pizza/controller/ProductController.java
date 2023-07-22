@@ -45,13 +45,13 @@ public class ProductController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Product> countryPage = gProductRepository.findAll(pageable);
-            List<Product> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<Product> productPage = gProductRepository.findAll(pageable);
+            List<Product> productList = productPage.getContent();
+            Long totalElement = productPage.getTotalElements();
 
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(productList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

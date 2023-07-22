@@ -19,7 +19,7 @@ public class Payment {
     private int id;
 
     @Column(name = "check_number")
-    private int checkNumber;
+    private String checkNumber;
 
     @Column(name = "payment_date")
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
@@ -31,7 +31,7 @@ public class Payment {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "customers_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     public Payment() {
@@ -43,7 +43,7 @@ public class Payment {
         this.amount = amount;
     }
 
-    public void setCheckNumber(int checkNumber) {
+    public void setCheckNumber(String checkNumber) {
         this.checkNumber = checkNumber;
     }
 
@@ -63,7 +63,7 @@ public class Payment {
         return amount;
     }
 
-    public int getCheckNumber() {
+    public String getCheckNumber() {
         return checkNumber;
     }
 

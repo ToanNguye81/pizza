@@ -176,31 +176,44 @@ public class OrderController {
         // TODO: process POST request
         // Map<String, Object> newOrder = (Map<String, Object>) req.get("newOrder");
         Integer customerId = (Integer) req.get("customerId");
+        System.out.println("===============1");
+        System.out.println(customerId);
         String comments = (String) req.get("comments");
         List<Map<String, Object>> cart = (List<Map<String, Object>>) req.get("cart");
+        System.out.println("===============12");
 
         Optional<Customer> existingCustomer = gCustomerRepository.findById(customerId);
         if (existingCustomer.isPresent()) {
+            System.out.println("===============13");
+
             // check all product is existing
             Boolean allProductExisting = true;
             for (Map<String, Object> product : cart) {
                 Integer productId = (Integer) product.get("productId");
                 if (isExistingProduct(productId) == false) {
+                    System.out.println("===============4");
+
                     allProductExisting = false;
                 }
             }
             if (allProductExisting) {
+                System.out.println("===============5");
                 // create order
                 Order createdOrder = createOrder(comments, existingCustomer.get());
                 // Create Order Detail List
                 createOrderDetailList(cart, createdOrder);
+                ;
 
                 return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
             } else {
+                System.out.println("===============16");
+
                 return new ResponseEntity<>("At least productId is invalid", HttpStatus.BAD_REQUEST);
             }
 
         } else {
+            System.out.println("===============17");
+
             return new ResponseEntity<>("Not found customer!!", HttpStatus.NOT_FOUND);
         }
     }
@@ -212,6 +225,8 @@ public class OrderController {
 
     // Create Order
     public Order createOrder(String comment, Customer customer) {
+        System.out.println("===============53");
+        System.out.println(customer);
         Order newOrder = new Order();
         newOrder.setOrderDate(new Date());
         newOrder.setComments(comment);
@@ -223,7 +238,9 @@ public class OrderController {
 
     // Create Order Detail List
     public List<OrderDetail> createOrderDetailList(List<Map<String, Object>> cart, Order order) {
+        System.out.println("===============53dw");
         List<OrderDetail> orderDetailList = new ArrayList<>();
+
         for (Map<String, Object> product : cart) {
             Integer productId = (Integer) product.get("productId");
             Integer quantityOrder = (Integer) product.get("quantity");
