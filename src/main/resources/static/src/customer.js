@@ -117,6 +117,10 @@ let customer = {
 };
 
 let customerTable = $("#customer-table").DataTable({
+  responsive: true,
+  lengthChange: false,
+  autoWidth: false,
+  buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
   columns: [
     { data: "id" },
     { data: "firstName" },
@@ -137,17 +141,20 @@ let customerTable = $("#customer-table").DataTable({
     },
   ],
 });
-
 function loadCustomerOnTable(pCustomers) {
   "use strict";
   customerTable.clear();
   customerTable.rows.add(pCustomers);
-  customerTable.draw();
+  customerTable
+    .draw()
+    .buttons()
+    .container()
+    .appendTo("#customer-table_wrapper .col-md-6:eq(0)");
 }
 
 function getCustomerFromDb() {
   "use strict";
-  $.get("/customers", (customer) => loadCustomerOnTable(customer));
+  $.get("/customers?size=100", (customer) => loadCustomerOnTable(customer));
 }
 getCustomerFromDb();
 
