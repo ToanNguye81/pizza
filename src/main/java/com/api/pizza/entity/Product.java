@@ -46,7 +46,7 @@ public class Product {
     private BigDecimal buyPrice;
 
     @ManyToOne
-    @JoinColumn(name = "productLines_id", nullable = false)
+    @JoinColumn(name = "productLine_id", nullable = false)
     // @JsonIgnore
     private ProductLine productLine;
 

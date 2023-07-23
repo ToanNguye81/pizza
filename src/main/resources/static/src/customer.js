@@ -246,3 +246,53 @@ function validateCustomer(pCustomers) {
   }
   return vResult;
 }
+
+var areaChartData = {
+  labels: ["USA", " France", " Singapore", " Spain"],
+  datasets: [
+    {
+      label: "Digital Goods",
+      backgroundColor: "rgba(60,141,188,0.9)",
+      borderColor: "rgba(60,141,188,0.8)",
+      pointRadius: false,
+      pointColor: "#3b8bba",
+      pointStrokeColor: "rgba(60,141,188,1)",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(60,141,188,1)",
+      data: [28, 48, 40, 19],
+    },
+    {
+      label: "Electronics",
+      backgroundColor: "rgba(210, 214, 222, 1)",
+      borderColor: "rgba(210, 214, 222, 1)",
+      pointRadius: false,
+      pointColor: "rgba(210, 214, 222, 1)",
+      pointStrokeColor: "#c1c7d1",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(220,220,220,1)",
+      data: [65, 59, 80, 81],
+    },
+  ],
+};
+
+//-------------
+//- BAR CHART -
+//-------------
+let barChartCanvas = $("#barChart").get(0).getContext("2d");
+let barChartData = $.extend(true, {}, areaChartData);
+let temp0 = areaChartData.datasets[0];
+let temp1 = areaChartData.datasets[1];
+barChartData.datasets[0] = temp1;
+barChartData.datasets[1] = temp0;
+
+let barChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  datasetFill: false,
+};
+
+new Chart(barChartCanvas, {
+  type: "bar",
+  data: barChartData,
+  options: barChartOptions,
+});

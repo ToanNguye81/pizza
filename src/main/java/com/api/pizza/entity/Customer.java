@@ -216,4 +216,9 @@ public class Customer {
         return updatedDate;
     }
 
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "+++" + id + email.toString() + " " + firstName.toString() + "++++++++";
+    }
 }

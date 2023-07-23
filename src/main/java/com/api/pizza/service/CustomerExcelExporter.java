@@ -11,7 +11,7 @@ import org.apache.poi.xssf.usermodel.*;
 
 import com.api.pizza.entity.Customer;
 
-public class ExcelExporter {
+public class CustomerExcelExporter {
     private XSSFWorkbook workbook;
     private XSSFSheet sheet;
     private List<Customer> customers;
@@ -21,7 +21,7 @@ public class ExcelExporter {
      * 
      * @param customers
      */
-    public ExcelExporter(List<Customer> customers) {
+    public CustomerExcelExporter(List<Customer> customers) {
         this.customers = customers;
         this.workbook = new XSSFWorkbook();
     }

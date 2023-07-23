@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.pizza.entity.Customer;
 import com.api.pizza.repository.ICustomerRepository;
-import com.api.pizza.service.ExcelExporter;
+import com.api.pizza.service.CustomerExcelExporter;
 
 @RestController
 @CrossOrigin
@@ -167,7 +167,7 @@ public class CustomerController {
         response.setHeader(headerKey, headerValue);
         List<Customer> customer = new ArrayList<Customer>();
         gCustomerRepository.findAll().forEach(customer::add);
-        ExcelExporter excelExporter = new ExcelExporter(customer);
+        CustomerExcelExporter excelExporter = new CustomerExcelExporter(customer);
         excelExporter.export(response);
     }
 

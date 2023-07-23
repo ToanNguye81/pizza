@@ -27,7 +27,7 @@ public class Order {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "customers_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     // 1-n => order- orderDetail
