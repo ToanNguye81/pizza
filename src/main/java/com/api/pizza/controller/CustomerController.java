@@ -43,11 +43,19 @@ public class CustomerController {
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomer(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "countryList", required = false) List<String> countryList) {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Customer> customerPage = gCustomerRepository.findAll(pageable);
+            // Gọi findAll của repository và truyền thêm tham số countryList nếu có
+            Page<Customer> customerPage;
+            if (countryList != null && !countryList.isEmpty()) {
+                customerPage = gCustomerRepository.findAllByCountryIn(countryList, pageable);
+            } else {
+                customerPage = gCustomerRepository.findAll(pageable);
+            }
+
             List<Customer> customerList = customerPage.getContent();
             Long totalElement = customerPage.getTotalElements();
 
