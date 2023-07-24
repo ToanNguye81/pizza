@@ -41,13 +41,13 @@ public class OfficeController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Office> countryPage = gOfficeRepository.findAll(pageable);
-            List<Office> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<Office> officePage = gOfficeRepository.findAll(pageable);
+            List<Office> officeList = officePage.getContent();
+            Long totalElement = officePage.getTotalElements();
 
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(officeList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

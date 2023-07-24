@@ -45,13 +45,13 @@ public class OrderDetailController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<OrderDetail> countryPage = gOrderDetailRepository.findAll(pageable);
-            List<OrderDetail> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<OrderDetail> orderDetailPage = gOrderDetailRepository.findAll(pageable);
+            List<OrderDetail> orderDetailList = orderDetailPage.getContent();
+            Long totalElement = orderDetailPage.getTotalElements();
 
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(orderDetailList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

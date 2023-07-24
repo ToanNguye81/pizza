@@ -47,13 +47,13 @@ public class CustomerController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Customer> countryPage = gCustomerRepository.findAll(pageable);
-            List<Customer> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<Customer> customerPage = gCustomerRepository.findAll(pageable);
+            List<Customer> customerList = customerPage.getContent();
+            Long totalElement = customerPage.getTotalElements();
 
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(customerList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

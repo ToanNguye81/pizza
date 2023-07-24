@@ -55,12 +55,12 @@ public class OrderController {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            Page<Order> countryPage = gOrderRepository.findAll(pageable);
-            List<Order> countryList = countryPage.getContent();
-            Long totalElement = countryPage.getTotalElements();
+            Page<Order> orderPage = gOrderRepository.findAll(pageable);
+            List<Order> orderList = orderPage.getContent();
+            Long totalElement = orderPage.getTotalElements();
             return ResponseEntity.ok()
                     .header("totalCount", String.valueOf(totalElement))
-                    .body(countryList);
+                    .body(orderList);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
