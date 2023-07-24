@@ -12,4 +12,6 @@ public interface ICustomerRepository extends JpaRepository<Customer, Integer> {
 
     Page<Customer> findAllByCountryIn(List<String> countryList, Pageable pageable);
 
+    long countCustomersByCountry(String country);
+
 }

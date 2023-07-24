@@ -5,7 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,19 +45,11 @@ public class CustomerController {
     @GetMapping("/customers")
     public ResponseEntity<List<Customer>> getAllCustomer(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "countryList", required = false) List<String> countryList) {
+            @RequestParam(value = "size", defaultValue = "10") int size) {
         try {
             // tạo ra một đối tượng Pageable để đại diện cho thông tin về phân trang.
             Pageable pageable = PageRequest.of(page, size);
-            // Gọi findAll của repository và truyền thêm tham số countryList nếu có
-            Page<Customer> customerPage;
-            if (countryList != null && !countryList.isEmpty()) {
-                customerPage = gCustomerRepository.findAllByCountryIn(countryList, pageable);
-            } else {
-                customerPage = gCustomerRepository.findAll(pageable);
-            }
-
+            Page<Customer> customerPage = gCustomerRepository.findAll(pageable);
             List<Customer> customerList = customerPage.getContent();
             Long totalElement = customerPage.getTotalElements();
 
@@ -177,6 +171,26 @@ public class CustomerController {
         gCustomerRepository.findAll().forEach(customer::add);
         CustomerExcelExporter excelExporter = new CustomerExcelExporter(customer);
         excelExporter.export(response);
+    }
+
+    @GetMapping("/customers/count")
+    public ResponseEntity<List<Map<String, Object>>> getCustomerCountByCountry(@RequestParam List<String> countries) {
+        try {
+            // Thực hiện truy vấn động để lấy số lượng khách hàng cho từng quốc gia
+            List<Map<String, Object>> customerList = new ArrayList<>();
+
+            for (String country : countries) {
+                long customerCount = gCustomerRepository.countCustomersByCountry(country);
+                Map<String, Object> customerMap = new HashMap<>();
+                customerMap.put("country", country);
+                customerMap.put("customerCount", customerCount);
+                customerList.add(customerMap);
+            }
+
+            return ResponseEntity.ok().body(customerList);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
