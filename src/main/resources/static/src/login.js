@@ -6,8 +6,7 @@ let user = {
     password: "",
   },
 
-  login(event) {
-    event.preventDefault();
+  login() {
     this.userInfo = {
       username: $("#inp-username").val(),
       password: $("#inp-password").val(),
@@ -39,8 +38,7 @@ let user = {
       });
     }
   },
-  register(event) {
-    event.preventDefault();
+  register() {
     this.userInfo = {
       username: $("#inp-username").val(),
       password: $("#inp-password").val(),
