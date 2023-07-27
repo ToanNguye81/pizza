@@ -13,8 +13,10 @@ import java.util.Set;
 @Setter
 public class User extends BaseEntity {
 
+	@Column(name = "username", unique = true)
 	private String username;
 
+	@Column(name = "password")
 	private String password;
 
 	@ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)

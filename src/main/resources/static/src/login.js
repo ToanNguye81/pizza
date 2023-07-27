@@ -27,7 +27,7 @@ let user = {
           // Lưu token vào cookie (thời gian hết hạn trong 1 giờ)
           document.cookie = "token=" + res + ";expires=1h;path=/";
           // Chuyển hướng người dùng đến trang sau khi đăng nhập thành công
-          window.location.href = "/index.html";
+          window.location.href = "/hello";
           console.error("Đăng nhập không thất bại.");
         },
         error: (e) => {
@@ -55,13 +55,11 @@ let user = {
         data: JSON.stringify(this.userInfo),
         contentType: "application/json",
         success: (res) => {
-          console.log(res);
-          console.log("Đăng kí thành công");
+          alert("Đăng kí thành công. Hãy đăng nhập lại");
         },
         error: (e) => {
           // Xử lý lỗi nếu có
-          console.log("Lỗi trong quá trình đăng kí. Vui lòng thử lại sau.");
-          console.log(e);
+          console.log("Có lỗi xảy ra trong quá trình đăng kí");
         },
       });
     }

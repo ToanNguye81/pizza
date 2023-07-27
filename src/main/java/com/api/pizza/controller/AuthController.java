@@ -47,7 +47,6 @@ public class AuthController {
         token.setTokenExpDate(jwtUtil.generateExpirationDate());
         token.setCreatedBy(userPrincipal.getUserId());
         tokenService.createToken(token);
-        System.out.println("=========================");
         System.out.println(token.getToken());
         return ResponseEntity.ok(token.getToken());
     }
@@ -87,7 +86,7 @@ public class AuthController {
     @GetMapping("/hello6")
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity hello6() {
-        return ResponseEntity.ok("hello chi cho mANAGER");
+        return ResponseEntity.ok("hello chi cho MANAGER");
     }
 
     @GetMapping("/hello7")
